@@ -1,0 +1,12 @@
+.new-meta-item-posts,
+.new-meta-item-categories,
+.new-meta-item-tags {
+  color: rgba(85,85,85,0.7);
+  font-size: 14px;
+  line-height: 24px;
+  display: flex;
+  align-items: center;
+  padding: 2px;
+  margin: 4px 8px 4px 0;
+  border-radius: 4px;
+}
