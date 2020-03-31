@@ -105,9 +105,6 @@
   .archive {
     width: 90%;
   }
-  .archive .archive-item .archive-item-date {
-    display: none;
-  }
   #dynamic-to-top {
     display: none !important;
   }
