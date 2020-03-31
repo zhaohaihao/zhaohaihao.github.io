@@ -150,7 +150,7 @@ template {
   font-display: swap;
 }
 html {
-  font-family: Consolas, Monaco, Menlo, Consolas, monospace;
+  font-family: 'Microsoft Jhenghei', Lantinghei SC, 'lanting', PingFang SC, Seguo UI, Microsoft Yahei, Arial;
 }
 html::-webkit-scrollbar {
   width: 8px;
@@ -1334,9 +1334,7 @@ header label {
 .highlight .code .emphasis {
   font-style: italic;
 }
-.new-meta-item-posts,
-.new-meta-item-categories,
-.new-meta-item-tags {
+.new-meta-item-posts {
   color: rgba(85,85,85,0.7);
   font-size: 14px;
   line-height: 24px;
@@ -1345,4 +1343,7 @@ header label {
   padding: 2px;
   margin: 4px 8px 4px 0;
   border-radius: 4px;
+}
+.new-meta-item-posts.dark-theme {
+  color: #a9a9b3;
 }

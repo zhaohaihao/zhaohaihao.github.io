@@ -1,5 +1,5 @@
 html {
-  font-family: Consolas, Monaco, Menlo, Consolas, monospace;
+  font-family: $font-family;
 }
 html::-webkit-scrollbar {
   width: 8px;
