@@ -1,0 +1,13 @@
+# hexo robots.txt
+User-agent: *
+Allow: /
+Allow: /archives/
+Allow: /posts/
+
+Disallow: /js/
+Disallow: /css/
+Disallow: /fonts/
+Disallow: /image/
+
+Sitemap: https://www.zhaohaihao.com/sitemap.xml
+Sitemap: https://www.zhaohaihao.com/baidusitemap.xml
