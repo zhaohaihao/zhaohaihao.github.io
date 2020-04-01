@@ -229,22 +229,7 @@
 
 <p>测试类的输出结果如下：</p>
 <blockquote>
-<p>Resume类的无参构造函数<br>开始克隆简历<br>=====简历修改前=====<br>姓名: 海豪<br>生日: Sat Jan 01 00:00:00 CST 1994, 性别: 男, 毕业院校: XXXX大学, 工龄: 1<br>公司: A科技有限公司, 工作描述: 在A公司的工作描述</p>
-</blockquote>
-<blockquote>
-<p>=====简历修改后=====</p>
-</blockquote>
-<blockquote>
-<p>姓名: 海豪</p>
-</blockquote>
-<blockquote>
-<p>生日: Sat Jan 01 00:00:00 CST 1994, 性别: 男, 毕业院校: XXXX大学, 工龄: 3</p>
-</blockquote>
-<blockquote>
-<p>公司: B科技有限公司, 工作描述: 在B公司的工作描述</p>
-</blockquote>
-<blockquote>
-<p>是否为同一对象: false</p>
+<p>Resume类的无参构造函数<br>开始克隆简历<br>=====简历修改前=====<br>姓名: 海豪<br>生日: Sat Jan 01 00:00:00 CST 1994, 性别: 男, 毕业院校: XXXX大学, 工龄: 1<br>公司: A科技有限公司, 工作描述: 在A公司的工作描述<br>=====简历修改后=====<br>姓名: 海豪<br>生日: Sat Jan 01 00:00:00 CST 1994, 性别: 男, 毕业院校: XXXX大学, 工龄: 3<br>公司: B科技有限公司, 工作描述: 在B公司的工作描述<br>是否为同一对象: false</p>
 </blockquote>
 <p>从测试类的输出结果中我们可以看到：</p>
 <ul>
@@ -263,60 +248,8 @@
 
 <p>测试类的输出结果如下：</p>
 <blockquote>
-<p>Resume类的无参构造函数</p>
-</blockquote>
-<blockquote>
-<p>开始克隆简历</p>
-</blockquote>
-<blockquote>
-<p>=====原版简历=====</p>
-</blockquote>
-<blockquote>
-<p>姓名: 海豪</p>
-</blockquote>
-<blockquote>
-<p>生日: Sat Jan 01 00:00:00 CST 1994, 性别: 男, 毕业院校: XXXX大学, 工龄: 1</p>
-</blockquote>
-<blockquote>
-<p>公司: A科技有限公司, 工作描述: 在A公司的工作描述</p>
-</blockquote>
-<blockquote>
-<p>=====拷贝简历=====</p>
-</blockquote>
-<blockquote>
-<p>姓名: 海豪</p>
-</blockquote>
-<blockquote>
-<p>生日: Sat Jan 01 00:00:00 CST 1994, 性别: 男, 毕业院校: XXXX大学, 工龄: 1</p>
-</blockquote>
-<blockquote>
-<p>公司: A科技有限公司, 工作描述: 在A公司的工作描述</p>
-</blockquote>
-<blockquote>
-</blockquote>
-<blockquote>
-<p>=====修改后原版简历=====</p>
-</blockquote>
-<blockquote>
-<p>姓名: 海豪</p>
-</blockquote>
-<blockquote>
-<p>生日: Wed Jan 05 00:00:00 CST 1994, 性别: 男, 毕业院校: XXXX大学, 工龄: 1</p>
-</blockquote>
-<blockquote>
-<p>公司: A科技有限公司, 工作描述: 在A公司的工作描述</p>
-</blockquote>
-<blockquote>
-<p>=====修改后拷贝简历=====</p>
-</blockquote>
-<blockquote>
-<p>姓名: 海豪</p>
-</blockquote>
-<blockquote>
-<p>生日: Wed Jan 05 00:00:00 CST 1994, 性别: 男, 毕业院校: XXXX大学, 工龄: 1</p>
-</blockquote>
-<blockquote>
-<p>公司: A科技有限公司, 工作描述: 在A公司的工作描述</p>
+<p>Resume类的无参构造函数<br>开始克隆简历<br>=====原版简历=====<br>姓名: 海豪<br>生日: Sat Jan 01 00:00:00 CST 1994, 性别: 男, 毕业院校: XXXX大学, 工龄: 1<br>公司: A科技有限公司, 工作描述: 在A公司的工作描述<br>=====拷贝简历=====<br>姓名: 海豪<br>生日: Sat Jan 01 00:00:00 CST 1994, 性别: 男, 毕业院校: XXXX大学, 工龄: 1<br>公司: A科技有限公司, 工作描述: 在A公司的工作描述</p>
+<p>=====修改后原版简历=====<br>姓名: 海豪<br>生日: Wed Jan 05 00:00:00 CST 1994, 性别: 男, 毕业院校: XXXX大学, 工龄: 1<br>公司: A科技有限公司, 工作描述: 在A公司的工作描述<br>=====修改后拷贝简历=====<br>姓名: 海豪<br>生日: Wed Jan 05 00:00:00 CST 1994, 性别: 男, 毕业院校: XXXX大学, 工龄: 1<br>公司: A科技有限公司, 工作描述: 在A公司的工作描述</p>
 </blockquote>
 <p>我们可以看到，在测试类中我们只修改了原版简历的生日，但是输出的结果当中拷贝简历的生日也跟着发生了变化。</p>
 <p>上述即为浅克隆，其并不拷贝生日变量引用指向的日期对象，与原对象共享日期对象。</p>
@@ -326,60 +259,8 @@
 
 <p>这时再用示例的测试类进行测试的结果如下：</p>
 <blockquote>
-<p>Resume类的无参构造函数</p>
-</blockquote>
-<blockquote>
-<p>开始克隆简历</p>
-</blockquote>
-<blockquote>
-<p>=====原版简历=====</p>
-</blockquote>
-<blockquote>
-<p>姓名: 海豪</p>
-</blockquote>
-<blockquote>
-<p>生日: Sat Jan 01 00:00:00 CST 1994, 性别: 男, 毕业院校: XXXX大学, 工龄: 1</p>
-</blockquote>
-<blockquote>
-<p>公司: A科技有限公司, 工作描述: 在A公司的工作描述</p>
-</blockquote>
-<blockquote>
-<p>=====拷贝简历=====</p>
-</blockquote>
-<blockquote>
-<p>姓名: 海豪</p>
-</blockquote>
-<blockquote>
-<p>生日: Sat Jan 01 00:00:00 CST 1994, 性别: 男, 毕业院校: XXXX大学, 工龄: 1</p>
-</blockquote>
-<blockquote>
-<p>公司: A科技有限公司, 工作描述: 在A公司的工作描述</p>
-</blockquote>
-<blockquote>
-</blockquote>
-<blockquote>
-<p>=====修改后原版简历=====</p>
-</blockquote>
-<blockquote>
-<p>姓名: 海豪</p>
-</blockquote>
-<blockquote>
-<p>生日: Wed Jan 05 00:00:00 CST 1994, 性别: 男, 毕业院校: XXXX大学, 工龄: 1</p>
-</blockquote>
-<blockquote>
-<p>公司: A科技有限公司, 工作描述: 在A公司的工作描述</p>
-</blockquote>
-<blockquote>
-<p>=====修改后拷贝简历=====</p>
-</blockquote>
-<blockquote>
-<p>姓名: 海豪</p>
-</blockquote>
-<blockquote>
-<p>生日: Sat Jan 01 00:00:00 CST 1994, 性别: 男, 毕业院校: XXXX大学, 工龄: 1</p>
-</blockquote>
-<blockquote>
-<p>公司: A科技有限公司, 工作描述: 在A公司的工作描述</p>
+<p>Resume类的无参构造函数<br>开始克隆简历<br>=====原版简历=====<br>姓名: 海豪<br>生日: Sat Jan 01 00:00:00 CST 1994, 性别: 男, 毕业院校: XXXX大学, 工龄: 1<br>公司: A科技有限公司, 工作描述: 在A公司的工作描述<br>=====拷贝简历=====<br>姓名: 海豪<br>生日: Sat Jan 01 00:00:00 CST 1994, 性别: 男, 毕业院校: XXXX大学, 工龄: 1<br>公司: A科技有限公司, 工作描述: 在A公司的工作描述</p>
+<p>=====修改后原版简历=====<br>姓名: 海豪<br>生日: Wed Jan 05 00:00:00 CST 1994, 性别: 男, 毕业院校: XXXX大学, 工龄: 1<br>公司: A科技有限公司, 工作描述: 在A公司的工作描述<br>=====修改后拷贝简历=====<br>姓名: 海豪<br>生日: Sat Jan 01 00:00:00 CST 1994, 性别: 男, 毕业院校: XXXX大学, 工龄: 1<br>公司: A科技有限公司, 工作描述: 在A公司的工作描述</p>
 </blockquote>
 <p>我们可以看到，在修改了原版简历的生日后，拷贝简历的生日并未发生改变。这也说明经过深克隆后，两者的日期引用并不是引用同一个对象。</p>
 <h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><h2 id="适用场景"><a href="#适用场景" class="headerlink" title="适用场景"></a>适用场景</h2><ul>
