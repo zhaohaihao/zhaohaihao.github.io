@@ -8,6 +8,8 @@ Disallow: /js/
 Disallow: /css/
 Disallow: /fonts/
 Disallow: /image/
+Disallow: /404/
+Disallow: 404.html
 
 Sitemap: https://www.zhaohaihao.com/sitemap.xml
 Sitemap: https://www.zhaohaihao.com/baidusitemap.xml
