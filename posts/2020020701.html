@@ -260,7 +260,7 @@
 </blockquote>
 <p>也就是说在实现父类的抽象方法时，子类的方法返回值范围一定要小于父类方法的返回值范围。</p>
 <p>那我们反过来试下，我们将子类方法的返回值改为 <code>Object</code> ，而父类方法的返回值仍保持 <code>Map</code> 不变。</p>
-<p><img src="https://cdn.nlark.com/yuque/0/2020/png/324477/1581132253076-65ac1b58-cfe4-4406-ae63-878061eed85e.png#align=left&display=inline&height=214&name=image.png&originHeight=428&originWidth=1614&size=76291&status=done&style=none&width=807" alt="image.png"></p>
+<p><img src="https://oss.zhaohaihao.com/photo/design-patterns/lsp/lsp01.png?x-oss-process=style/style01" alt="image.png"></p>
 <p><code>Object</code> 是所有类的基类，因此它的范围是大于 <code>Map</code> 的，这个时候编辑器已经给出了错误提示，如上图。</p>
 <h1 id="继承的缺点"><a href="#继承的缺点" class="headerlink" title="继承的缺点"></a>继承的缺点</h1><ol>
 <li>继承是侵入性的。只要继承，就必须拥有父类的所有属性和方法</li>

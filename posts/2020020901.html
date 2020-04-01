@@ -232,7 +232,7 @@
 <p>使用MySQL数据库连接添加用户</p>
 </blockquote>
 <h2 id="类结构图"><a href="#类结构图" class="headerlink" title="类结构图"></a>类结构图</h2><p>以上示例类的结构图如下所示</p>
-<p><img src="https://cdn.nlark.com/yuque/0/2020/png/324477/1582697505636-0631e42d-2e74-42b3-afbe-770e8f9fe6ab.png#align=left&display=inline&height=283&name=image.png&originHeight=566&originWidth=498&size=32046&status=done&style=none&width=249" alt="image.png"></p>
+<p><img src="https://oss.zhaohaihao.com/photo/design-patterns/crp/crp01.png?x-oss-process=style/style01" alt="image.png"></p>
 <h1 id="需求扩展"><a href="#需求扩展" class="headerlink" title="需求扩展"></a>需求扩展</h1><p>假设现在新旧系统合并，需要将旧有系统的 <code>Oracle</code> 数据库中的数据接入到新系统中。</p>
 <p>而目前 <code>DBConnection</code> 中只会返回 <code>MySQL</code> 数据库的连接。</p>
 <p>其实也简单，我们在 <code>DBConnection</code> 中再新增一个方法用于获取 <code>Oracle</code> 数据库的连接。功能实现上其实是没什么问题的，但是这样会违反开闭原则。</p>
@@ -252,7 +252,7 @@
 <p>使用MySQL数据库连接添加用户<br>使用Oracle数据库连接添加用户</p>
 </blockquote>
 <p>如果还有扩展，则只要写与 <code>MySQLConnection</code> 平级的类继承 <code>DBConnection</code> ，而具体的选择则交由应用层。</p>
-<h2 id="类结构图-1"><a href="#类结构图-1" class="headerlink" title="类结构图"></a>类结构图</h2><p>以上示例类的结构图如下所示<br><img src="https://cdn.nlark.com/yuque/0/2020/png/324477/1582697534051-0c7f42d0-667b-4abb-8370-ce25061c3412.png#align=left&display=inline&height=331&name=image.png&originHeight=662&originWidth=1258&size=69031&status=done&style=none&width=629" alt="image.png"></p>
+<h2 id="类结构图-1"><a href="#类结构图-1" class="headerlink" title="类结构图"></a>类结构图</h2><p>以上示例类的结构图如下所示<br><img src="https://oss.zhaohaihao.com/photo/design-patterns/crp/crp02.png?x-oss-process=style/style01" alt="image.png"></p>
 <p>通过与场景示例中类图的对比，我们不难发现扩展后去掉了 <code>UserDao</code> 和 <code>DBConnection</code> 之间的继承关系，改成了一对一的组合关系。而 <code>OracleConnection</code> 和 <code>MySQLConnection</code> 都是继承 <code>DBConnection</code> 的，这一平级可以实现数据库连接的扩展，是符合开闭原则的。</p>
 <h1 id="优点"><a href="#优点" class="headerlink" title="优点"></a>优点</h1><ul>
 <li>提高系统的灵活性</li>
