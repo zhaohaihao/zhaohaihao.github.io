@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="Horace">
+
+
+
+
+
+
+    <title>创建型-单例模式 (Singleton) | Horace&#39;s Blog</title>
+    
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+<body>
+	<script type="text/javascript" src="/js/canvas-colorful-nest.js"></script>
+    <div class="wrapper">
+        <header>
+    
+        <nav class="navbar">
+            <div class="container">
+                <div class="navbar-header header-logo"><a href="/">Horace&#39;s Blog</a></div>
+                <div class="menu navbar-right">
+                    
+                        <a class="menu-item" href="/archives">归档</a>
+                    
+                        <a class="menu-item" href="/categories">分类</a>
+                    
+                        <a class="menu-item" href="/tags">标签</a>
+                    
+                        <a class="menu-item" href="/about">关于</a>
+                    
+                    <input id="switch_default" type="checkbox" class="switch_default">
+                    <label for="switch_default" class="toggleBtn"></label>
+                </div>
+            </div>
+        </nav>
+
+        
+        <nav class="navbar-mobile" id="nav-mobile">
+            <div class="container">
+                <div class="navbar-header">
+                    <div>
+                        <a href="/">Horace&#39;s Blog</a>
+                    </div>
+                    <div style="display: inherit;">
+                        <div><a id="mobile-toggle-theme">Light</a></div>
+                        <div class="menu-toggle" onclick="mobileBtn()" style="padding-left: 15px;">&#9776;菜单</div>
+                    </div>
+                    
+                </div>
+                <div class="menu" id="mobile-menu">
+                    
+                        <a class="menu-item" href="/archives">归档</a>
+                    
+                        <a class="menu-item" href="/categories">分类</a>
+                    
+                        <a class="menu-item" href="/tags">标签</a>
+                    
+                        <a class="menu-item" href="/about">关于</a>
+                    
+                </div>
+            </div>
+        </nav>
+    
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+           mobileMenu.classList.remove("active")
+        }else{
+           toggleMenu.classList.add("active")
+           mobileMenu.classList.add("active")
+        }
+    }
+</script>
+        <div class="main">
+            <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <!--<a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>-->
+        <a onclick="go_top()">返回页首</a>
+        <a onclick="go_bottom()">转到底部</a>
+    </div>
+</div>
+
+<script>
+    document.ready(
+        function () {
+            tocbot.init({
+                tocSelector: '.tocbot-list',
+                contentSelector: '.post-content',
+                headingSelector: 'h1, h2, h3, h4, h5',
+                collapseDepth: 1,
+                orderedList: false,
+                scrollSmooth: true,
+            })
+        }
+    )
+
+    function expand_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 6,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "collapse_toc()");
+        b.innerHTML = "Collapse all"
+    }
+
+    function collapse_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 1,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "expand_toc()");
+        b.innerHTML = "Expand all"
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">创建型-单例模式 (Singleton)</h1>
+            
+                <div class="post-meta">
+                    2020-02-12
+                <!--
+                    
+                        <a itemprop="author" rel="author" href="/">Horace</a> 
+                    
+
+                    
+                        <span class="post-time">
+                        发布于 <a href="#">02-12&nbsp;14:11:55</a> ,
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                            
+                                <a href="/categories/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/"># 设计模式</a>
+                            
+                        </span>
+                    
+                -->
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <p><a href="https://emojipedia.org/backhand-index-pointing-right/" target="_blank" rel="noopener">👉</a><a href="https://github.com/zhaohaihao/java-design-patterns/tree/master/105-Singleton" target="_blank" rel="noopener"><strong>文章示例代码</strong></a><a href="https://emojipedia.org/backhand-index-pointing-left/" target="_blank" rel="noopener">👈</a></p>
+<h1 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h1><blockquote>
+<p>保证一个类有且仅有一个实例，并且提供一个可以访问它的全局访问点。</p>
+</blockquote>
+<h1 id="三个基本步骤"><a href="#三个基本步骤" class="headerlink" title="三个基本步骤"></a>三个基本步骤</h1><p>实现单例模式有三个基本的步骤：</p>
+<ol>
+<li>私有构造方法用来限制外部类对其直接实例化</li>
+<li>提供一个私有静态当前类的对象作为变量</li>
+<li>提供一个公有静态方法返回类的实例</li>
+</ol>
+<h1 id="实现单例模式的几种方式"><a href="#实现单例模式的几种方式" class="headerlink" title="实现单例模式的几种方式"></a>实现单例模式的几种方式</h1><h2 id="懒汉式"><a href="#懒汉式" class="headerlink" title="懒汉式"></a>懒汉式</h2><p>懒汉式单例模式在类创建的时候不会创建实例，因此类的加载速度比较快。</p>
+<p>懒汉式单例模式在第一次调用的时候才进行初始化，这样做避免了内存的浪费。 </p>
+<p>使用懒汉式方法创建的 <code>LazySingleton</code> 类实例代码:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> zhh</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@description</span> 单例模式-懒汉式</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@date</span> 2020-02-11 19:56</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">LazySingleton</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> LazySingleton instance = <span class="keyword">null</span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="title">LazySingleton</span><span class="params">()</span> </span>&#123;&#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> LazySingleton <span class="title">getInstance</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (instance == <span class="keyword">null</span>) &#123;</span><br><span class="line">            instance = <span class="keyword">new</span> LazySingleton();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> instance;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这种方式其实是线程不安全的。</p>
+<p>在单线程环境下，这种方式可以很好地进行处理。但是在多线程的环境下，这种方式就会出现问题。</p>
+<p>假设现在有两个线程，一个线程A，另一个线程B。当线程A到达 <code>instance = new LazySingleton();</code> 这一行但没有执行这一行的同时，线程B到达了 <code>if (instance == null)</code> 这个判断。此时由于线程A还未执行当前行，线程B的判断结果为 <code>true</code> ，所以线程B依旧可以执行 <code>instance = new LazySingleton();</code> 这一行语句。此时这两个线程会获得单例类 <code>LazySingleton</code> 的两个不同实例，从而进一步破坏了单例模式。</p>
+<h3 id="改进方式一-加同步锁"><a href="#改进方式一-加同步锁" class="headerlink" title="改进方式一 (加同步锁)"></a>改进方式一 (加同步锁)</h3><p>在 <code>getInstance()</code> 方法上添加 <code>synchronized</code> 关键字，使得当前的方法变成同步方法。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> zhh</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@description</span> 单例模式-懒汉式</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@date</span> 2020-02-11 19:56</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">LazySingleton</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> LazySingleton instance = <span class="keyword">null</span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="title">LazySingleton</span><span class="params">()</span> </span>&#123;&#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">synchronized</span> LazySingleton <span class="title">getInstance</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (instance == <span class="keyword">null</span>) &#123;</span><br><span class="line">            instance = <span class="keyword">new</span> LazySingleton();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> instance;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>synchronized</code> 加在静态方法上，相当于锁的是当前类的class文件。</p>
+<h3 id="改进方式二-加同步锁"><a href="#改进方式二-加同步锁" class="headerlink" title="改进方式二 (加同步锁)"></a>改进方式二 (加同步锁)</h3><p>在 <code>getInstance()</code> 方法中添加 <code>synchronized</code> 块。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> zhh</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@description</span> 单例模式-懒汉式</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@date</span> 2020-02-11 19:56</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">LazySingleton</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> LazySingleton instance = <span class="keyword">null</span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="title">LazySingleton</span><span class="params">()</span> </span>&#123;&#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> LazySingleton <span class="title">getInstance</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">synchronized</span> (LazySingleton<span class="class">.<span class="keyword">class</span>) </span>&#123;</span><br><span class="line">            <span class="keyword">if</span> (instance == <span class="keyword">null</span>) &#123;</span><br><span class="line">                instance = <span class="keyword">new</span> LazySingleton();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> instance;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这种方式和上述改进方式一的效果实际上是一样的。</p>
+<p>在多线程资源共享当中，使用 <code>synchronized</code> 同步锁的方式，其实就是以<strong>时间换空间</strong>的方式。</p>
+<h2 id="双重检查懒汉式"><a href="#双重检查懒汉式" class="headerlink" title="双重检查懒汉式"></a>双重检查懒汉式</h2><p>同步锁是比较消耗资源的，会存在加锁和解锁的开销。而且上述两改进方式 <code>synchronized</code> 锁的是class文件，锁的粒度范围较大。</p>
+<p>为了兼顾性能和线程安全，使用双重检查的方式来改进懒汉式，代码如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> zhh</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@description</span> 单例模式-懒汉式(双重检查)</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@date</span> 2020-02-11 19:56</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">LazySingleton</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> LazySingleton instance = <span class="keyword">null</span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="title">LazySingleton</span><span class="params">()</span> </span>&#123;&#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> LazySingleton <span class="title">getInstance</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (instance == <span class="keyword">null</span>) &#123;</span><br><span class="line">            <span class="keyword">synchronized</span> (LazySingleton<span class="class">.<span class="keyword">class</span>) </span>&#123;</span><br><span class="line">                <span class="keyword">if</span> (instance == <span class="keyword">null</span>)&#123;</span><br><span class="line">                    instance = <span class="keyword">new</span> LazySingleton();</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> instance;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>外层 <code>if (instance == null)</code> 不加锁，如果不满足则程序直接返回，如果满足则也只会有一个线程进入到 <code>synchronized</code> 当中。大幅度地降低了将 <code>synchronized</code> 加在方法上时带来的性能开销。</p>
+<p>但是目前这种方式依旧存在隐患。主要原因在于外层 <code>if (instance == null)</code> 分支判断和 <code>instance = new LazySingleton()</code> 语句这两处。</p>
+<p>外层 <code>if (instance == null)</code> 在进行分支判断的时候， <code>instance</code> 对象有可能是不为空的，虽然不为空，但是很有可能 <code>instance</code> 这个对象还未完成初始化，也就是说我们的 <code>instance = new LazySingleton()</code> 语句还没有执行完成。</p>
+<p><strong>Q：如何理解？</strong></p>
+<hr>
+<p>我们可以先来看下 <code>instance = new LazySingleton()</code> 这语句。虽然看似简单的一行语句，但是在程序中这条语句实际上进行了三个操作：</p>
+<ol>
+<li>给当前对象分配内存</li>
+<li>初始化对象</li>
+<li>设置变量 <code>instance</code> 指向刚分配的内存地址</li>
+</ol>
+<p>在程序执行的过程当中，JVM有可能会发生<strong>指令重排序</strong>。比如发生指令重排序后当前语句的执行顺序变为132，即先给对象分配内存地址，然后将变量指向刚分配的内存地址，最后再进行对象的初始化操作。</p>
+<p>上述操作在单线程环境下也没什么大问题。然后我们再来看看，在多线程环境下，当前程序存在隐患的可能。</p>
+<table>
+<thead>
+<tr>
+<th align="center">时间线</th>
+<th align="center">线程A</th>
+<th align="center">线程B</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">1</td>
+<td align="center">给当前对象分配内存</td>
+<td align="center"></td>
+</tr>
+<tr>
+<td align="center">2</td>
+<td align="center">设置变量 <code>instance</code> 指向刚分配的内存地址</td>
+<td align="center"></td>
+</tr>
+<tr>
+<td align="center">3</td>
+<td align="center"></td>
+<td align="center">外层分支判断 <code>instance</code> 是否为null</td>
+</tr>
+<tr>
+<td align="center">4</td>
+<td align="center"></td>
+<td align="center">初次访问对象</td>
+</tr>
+<tr>
+<td align="center">5</td>
+<td align="center">初始化对象</td>
+<td align="center"></td>
+</tr>
+<tr>
+<td align="center">6</td>
+<td align="center">初次访问对象</td>
+<td align="center"></td>
+</tr>
+</tbody></table>
+<p>按照时间线的推移，我们可以从表格中看到在时间线4中线程B访问的对象是线程A中还未初始化完成的对象，这个时候就有可能发生异常。</p>
+<p>这里实际上有两种方式可以解决以上问题：</p>
+<ul>
+<li>防止指令重排序</li>
+<li>让其余的线程无法观察到当前线程的指令重排序</li>
+</ul>
+<p>**<br>**<br><strong>Q：如何避免指令重排序？</strong></p>
+<hr>
+<p>使用 <code>volatile</code> 关键字来声明 <code>instance</code> 变量，这样的话重排序就会被禁止。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">LazySingleton</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">volatile</span> LazySingleton instance = <span class="keyword">null</span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="title">LazySingleton</span><span class="params">()</span> </span>&#123;&#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> LazySingleton <span class="title">getInstance</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (instance == <span class="keyword">null</span>) &#123;</span><br><span class="line">            <span class="keyword">synchronized</span> (LazySingleton<span class="class">.<span class="keyword">class</span>) </span>&#123;</span><br><span class="line">                <span class="keyword">if</span> (instance == <span class="keyword">null</span>)&#123;</span><br><span class="line">                    instance = <span class="keyword">new</span> LazySingleton();</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> instance;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>CPU也有共享内存。在加了 <code>volatile</code> 关键字之后，所有的线程都能观察到共享内存的最新状态，保证了内存的可见性。</p>
+<h2 id="静态内部类模式"><a href="#静态内部类模式" class="headerlink" title="静态内部类模式"></a>静态内部类模式</h2><p>这种方式，其实就是让其余的线程无法观察到当前线程的指令重排序。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> zhh</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@description</span> 静态内部类单例模式</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@date</span> 2020-02-12 01:36</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">StaticInnerClassSingleton</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">SingletonHolder</span> </span>&#123;</span><br><span class="line">        <span class="keyword">private</span> <span class="keyword">static</span> StaticInnerClassSingleton instance = <span class="keyword">new</span> StaticInnerClassSingleton();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="title">StaticInnerClassSingleton</span><span class="params">()</span> </span>&#123;&#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> StaticInnerClassSingleton <span class="title">getInstance</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> SingletonHolder.instance;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>JVM在类的初始化阶段(即Class在被类加载器加载之后，在被线程使用之前这一期间)会去执行类的初始化。</p>
+<p>在类的初始化期间，JVM会去获取Class对象的初始化锁(同步多个线程对一个类的初始化)。</p>
+<p>初始化一个类，包括执行类的静态初始化，初始化类中声明的静态变量。<br>根据Java语言规范主要有五种情况在首次发生时，一个类(包括接口)将被立刻初始化。以 <code>Clazz</code> 类为例：</p>
+<ul>
+<li>有一个 <code>Clazz</code> 类型的实例被创建</li>
+<li><code>Clazz</code> 类中声明的一个静态方法被调用</li>
+<li><code>Clazz</code> 类中声明的一个静态成员被赋值</li>
+<li><code>Clazz</code> 类中的静态成员被使用，并且这个成员不是一个常量成员</li>
+<li><code>Clazz</code> 类是一个顶级类，并且 <code>Clazz</code> 类中有嵌套的断言语句</li>
+</ul>
+<p>通过改动双重检查懒汉式中线程A和线程B的流程，我们得到下图。</p>
+<p><img src="https://oss.zhaohaihao.com/photo/design-patterns/singleton/singleton01.png?x-oss-process=style/style01" alt=""><br>通过上图，我们可以分析下：当线程A和线程B尝试获取 <code>Class</code> 对象的初始化锁，假设线程A获取到了这个锁，此时线程A执行静态内部类的初始化操作。由于 <code>Class</code> 对象初始化锁的存在，线程B是无法看到类初始化操作中的指令重排序的。</p>
+<h2 id="饿汉式"><a href="#饿汉式" class="headerlink" title="饿汉式"></a>饿汉式</h2><p>饿汉式单例模式正好与懒汉式单例模式相反。</p>
+<p>饿汉式单例模式在类加载的时候就完成了初始化操作，避免了线程同步的问题。所以类在加载的时候比较缓慢，而在运行时获取对象的速度相对较快。 </p>
+<p>代码如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> zhh</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@description</span> 单例模式-饿汉式</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@date</span> 2020-02-12 12:59</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">HungrySingleton</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> HungrySingleton instance = <span class="keyword">new</span> HungrySingleton();</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="title">HungrySingleton</span><span class="params">()</span> </span>&#123;&#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> HungrySingleton <span class="title">getInstance</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> instance;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>饿汉式单例模式的问题就在于类在加载的时候就进行初始化操作，没有达到懒加载的效果。如果类从始至终都未曾使用过，那么就造成了资源的浪费。 </p>
+<p>当然也可以把对象实例化的过程放入到静态块当中，效果也是一样的。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> zhh</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@description</span> 单例模式-饿汉式</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@date</span> 2020-02-12 12:59</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">HungrySingleton</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> HungrySingleton instance;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">static</span> &#123;</span><br><span class="line">        instance = <span class="keyword">new</span> HungrySingleton();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="title">HungrySingleton</span><span class="params">()</span> </span>&#123;&#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> HungrySingleton <span class="title">getInstance</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> instance;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="枚举模式"><a href="#枚举模式" class="headerlink" title="枚举模式"></a>枚举模式</h2><p>枚举方式是《Effective Java》作者Josh Bloch推荐的方式。</p>
+<p>这种方式不仅能避免多线程同步的问题，而且还能防止序列化和反射破坏单例创建新的对象。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> zhh</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@description</span> 枚举单例模式</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@date</span> 2020-02-12 16:08</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">enum</span> EnumSingleton &#123;</span><br><span class="line">    INSTANCE;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">method</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"任何其他方法"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> zhh</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@description</span> 枚举单例模式</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@date</span> 2020-02-12 16:08</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">enum</span> EnumSingleton &#123;</span><br><span class="line">    INSTANCE &#123;</span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">method</span><span class="params">()</span> </span>&#123;</span><br><span class="line">            System.out.println(<span class="string">"任何其他方法"</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">void</span> <span class="title">method</span><span class="params">()</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>以上的两种方式均可，效果一样。</p>
+<h2 id="容器单例"><a href="#容器单例" class="headerlink" title="容器单例"></a>容器单例</h2><p>这种单例模式和享元模式有点类似。利用容器来管理多个单例对象。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> zhh</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@description</span> 容器单例</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@date</span> 2020-02-12 16:28</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ContainerSingleton</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> Map&lt;String, Object&gt; map = <span class="keyword">new</span> HashMap&lt;String, Object&gt;();</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="title">ContainerSingleton</span><span class="params">()</span> </span>&#123;&#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">putInstance</span><span class="params">(String key, Object instance)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (StringUtils.isNotBlank(key) &amp;&amp; instance != <span class="keyword">null</span>) &#123;</span><br><span class="line">            <span class="keyword">if</span> (!map.containsKey(key)) &#123;</span><br><span class="line">                map.put(key, instance);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Object <span class="title">getInstance</span><span class="params">(String key)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> map.get(key);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这种方式比较适合程序在初始化期间多个单例存放至容器进行统一管理，使用时通过键值从容器中获取单例对象。</p>
+<p>这里的容器使用的是 <code>HashMap</code> ，很显然是线程不安全的。但是对上述用例(程序在初始化期间多个单例存放至容器进行统一管理，使用时通过键值从容器中获取单例对象)这样使用也是可以的。</p>
+<p>为了线程安全，我们可以改用 <code>HashTable</code> 。但是 <code>HashTable</code> 会影响性能，在频繁地存取时都会有同步锁。也可以考虑使用 <code>ConcurrentHashMap</code> 。</p>
+<h2 id="ThreadLocal线程单例"><a href="#ThreadLocal线程单例" class="headerlink" title="ThreadLocal线程单例"></a>ThreadLocal线程单例</h2><p>这种方式产生的单例并不能保证在整个应用中全局唯一，但是它可以保证在同个线程当中唯一。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> zhh</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@description</span> ThreadLocal线程单例</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@date</span> 2020-02-12 17:03</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ThreadLocalSingleton</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> ThreadLocal&lt;ThreadLocalSingleton&gt; THREAD_LOCAL = <span class="keyword">new</span> ThreadLocal&lt;ThreadLocalSingleton&gt;() &#123;</span><br><span class="line">        <span class="comment">// 重写初始化方法</span></span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="function"><span class="keyword">protected</span> ThreadLocalSingleton <span class="title">initialValue</span><span class="params">()</span> </span>&#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">new</span> ThreadLocalSingleton();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="title">ThreadLocalSingleton</span><span class="params">()</span> </span>&#123;&#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> ThreadLocalSingleton <span class="title">getInstance</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> THREAD_LOCAL.get();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>ThreadLocal</code> 会为每个线程提供一个独立的变量副本。<code>ThreadLocal</code> 是基于 <code>ThreadLocalMap</code> 这个类来实现的，它维持了线程间的隔离。当调用 <code>ThreadLocal</code> 的 <code>get()</code> 方法时，我们不用指定键值，默认走的就是 <code>ThreadLocalMap</code> 。</p>
+<p><code>ThreadLocal</code> 隔离了多个线程对数据访问的冲突。在多线程资源共享当中，使用 <code>ThreadLocal</code> 的方式，其实就是以<strong>空间换时间</strong>的方式。</p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><h2 id="适用场景"><a href="#适用场景" class="headerlink" title="适用场景"></a>适用场景</h2><ul>
+<li>在应用场景中，某类只要求生成一个实例的时候。例如一个班中的班长、每个人的身份证号等。</li>
+<li>当对象需要被共享的场合。由于单例模式只允许创建一个对象，共享该对象可以节省内存，并且加快对象访问速度。例如Web中的配置对象、数据库的连接池等。</li>
+<li>当某类需要频繁进行实例化操作，而创建的对象又频繁被销毁的时候。例如多线程的线程池、网络连接池等。</li>
+</ul>
+<h2 id="优点"><a href="#优点" class="headerlink" title="优点"></a>优点</h2><ul>
+<li>在内存中只存在一个实例，减少了内存开销。</li>
+<li>避免对共享资源的多重占用。</li>
+<li>设置全局访问点，严格控制访问。</li>
+</ul>
+<h2 id="缺点"><a href="#缺点" class="headerlink" title="缺点"></a>缺点</h2><ul>
+<li>没有抽象层，扩展困难。</li>
+<li>单例类的职责过重，在一定程度上违背了“单一职责原则”。 </li>
+<li>不适用于变化的对象，如果同一类型的对象总是要在不同的用例场景发生变化，单例就会引起数据的错误，不能保存彼此的状态。 </li>
+<li>滥用单例将带来一些负面问题，如为了节省资源将数据库连接池对象设计为的单例类，可能会导致共享连接池对象的程序过多而出现连接池溢出；如果实例化的对象长时间不被利用，系统会认为是垃圾而被回收，这将导致对象状态的丢失。 </li>
+</ul>
+<h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><ul>
+<li>《Head First 设计模式》</li>
+<li>《大话设计模式》</li>
+<li>《Effective Java》</li>
+<li><a href="https://zh.wikipedia.org/wiki/%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F" target="_blank" rel="noopener">维基百科-单例模式</a></li>
+<li><a href="https://book.51cto.com/art/201511/498717.htm?pc" target="_blank" rel="noopener">使用容器实现单例模式</a></li>
+<li><a href="https://www.jianshu.com/p/6521ccac486d" target="_blank" rel="noopener">容器单例和ThreadLocal单例</a></li>
+<li><a href="https://blog.csdn.net/wu2374633583/article/details/80880203" target="_blank" rel="noopener">多线程之ThreadLocal单例模式</a></li>
+<li><a href="https://blog.csdn.net/yejingtao703/article/details/78806902" target="_blank" rel="noopener">ThreadLocal-单例模式下高并发线程安全</a></li>
+</ul>
+
+        </div>
+
+        
+            <section class="post-copyright">
+            
+                
+                
+                
+                
+
+                
+                    <p class="copyright-item" style="text-align: center; margin: 20px 0px;">
+                        <span>© 转载请保留本文地址, 著作权归作者所有</span>
+                    </p>
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <!--<span>Tag(s):</span>-->
+                <span class="tag">
+                    
+                    
+                        <a href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/"># 设计模式</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">返回上层</a>
+                <span>· </span>
+                <a href="/">返回主页</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/posts/2020021301.html">创建型-原型模式 (Prototype)</a>
+            
+            
+            <a class="next" rel="next" href="/posts/2020021101.html">创建型-建造者模式 (Builder)</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+        </div>
+        
+	<footer id="footer" class="footer" style="line-height: unset;">
+	    <div class="copyright" style="text-align: center;">
+	        本站已安全运行 <span id="htmer_time">0年293天1时59分51秒</span></br>
+	        <span>© 2019-2020 Horace&#39;s Blog.</span>
+	    </div>
+	</footer>
+
+	<script language="javascript">
+    function siteTime(){
+        window.setTimeout("siteTime()", 1000);
+        var seconds = 1000;
+        var minutes = seconds * 60;
+        var hours = minutes * 60;
+        var days = hours * 24;
+        var years = days * 365;
+        var today = new Date();
+        var todayYear = today.getFullYear();
+        var todayMonth = today.getMonth()+1;
+        var todayDate = today.getDate();
+        var todayHour = today.getHours();
+        var todayMinute = today.getMinutes();
+        var todaySecond = today.getSeconds();
+        /* Date.UTC() -- 返回date对象距世界标准时间(UTC)1970年1月1日午夜之间的毫秒数(时间戳)
+        year - 作为date对象的年份，为4位年份值
+        month - 0-11之间的整数，做为date对象的月份
+        day - 1-31之间的整数，做为date对象的天数
+        hours - 0(午夜24点)-23之间的整数，做为date对象的小时数
+        minutes - 0-59之间的整数，做为date对象的分钟数
+        seconds - 0-59之间的整数，做为date对象的秒数
+        microseconds - 0-999之间的整数，做为date对象的毫秒数 */
+        var t1 = Date.UTC(2019,6,12,22,22,22); //北京时间2016-12-1 00:00:00
+        var t2 = Date.UTC(todayYear,todayMonth,todayDate,todayHour,todayMinute,todaySecond);
+        var diff = t2-t1;
+        var diffYears = Math.floor(diff/years);
+        var diffDays = Math.floor((diff/days)-diffYears*365);
+        var diffHours = Math.floor((diff-(diffYears*365+diffDays)*days)/hours);
+        var diffMinutes = Math.floor((diff-(diffYears*365+diffDays)*days-diffHours*hours)/minutes);
+        var diffSeconds = Math.floor((diff-(diffYears*365+diffDays)*days-diffHours*hours-diffMinutes*minutes)/seconds);
+        document.getElementById("htmer_time").innerHTML=diffYears+"年"+diffDays+"天"+diffHours+"时"+diffMinutes+"分"+diffSeconds+"秒";
+    }
+    siteTime();
+</script>
+
+    </div>
+</body>
+</html>
