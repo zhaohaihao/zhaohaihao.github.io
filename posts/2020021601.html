@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="Horace">
+
+
+
+
+
+
+    <title>结构型-享元模式 (Flyweight) | Horace&#39;s Blog</title>
+    
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+<body>
+	<script type="text/javascript" src="/js/canvas-colorful-nest.js"></script>
+    <div class="wrapper">
+        <header>
+    
+        <nav class="navbar">
+            <div class="container">
+                <div class="navbar-header header-logo"><a href="/">Horace&#39;s Blog</a></div>
+                <div class="menu navbar-right">
+                    
+                        <a class="menu-item" href="/archives">归档</a>
+                    
+                        <a class="menu-item" href="/categories">分类</a>
+                    
+                        <a class="menu-item" href="/tags">标签</a>
+                    
+                        <a class="menu-item" href="/about">关于</a>
+                    
+                    <input id="switch_default" type="checkbox" class="switch_default">
+                    <label for="switch_default" class="toggleBtn"></label>
+                </div>
+            </div>
+        </nav>
+
+        
+        <nav class="navbar-mobile" id="nav-mobile">
+            <div class="container">
+                <div class="navbar-header">
+                    <div>
+                        <a href="/">Horace&#39;s Blog</a>
+                    </div>
+                    <div style="display: inherit;">
+                        <div><a id="mobile-toggle-theme">Light</a></div>
+                        <div class="menu-toggle" onclick="mobileBtn()" style="padding-left: 15px;">&#9776;菜单</div>
+                    </div>
+                    
+                </div>
+                <div class="menu" id="mobile-menu">
+                    
+                        <a class="menu-item" href="/archives">归档</a>
+                    
+                        <a class="menu-item" href="/categories">分类</a>
+                    
+                        <a class="menu-item" href="/tags">标签</a>
+                    
+                        <a class="menu-item" href="/about">关于</a>
+                    
+                </div>
+            </div>
+        </nav>
+    
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+           mobileMenu.classList.remove("active")
+        }else{
+           toggleMenu.classList.add("active")
+           mobileMenu.classList.add("active")
+        }
+    }
+</script>
+        <div class="main">
+            <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <!--<a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>-->
+        <a onclick="go_top()">返回页首</a>
+        <a onclick="go_bottom()">转到底部</a>
+    </div>
+</div>
+
+<script>
+    document.ready(
+        function () {
+            tocbot.init({
+                tocSelector: '.tocbot-list',
+                contentSelector: '.post-content',
+                headingSelector: 'h1, h2, h3, h4, h5',
+                collapseDepth: 1,
+                orderedList: false,
+                scrollSmooth: true,
+            })
+        }
+    )
+
+    function expand_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 6,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "collapse_toc()");
+        b.innerHTML = "Collapse all"
+    }
+
+    function collapse_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 1,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "expand_toc()");
+        b.innerHTML = "Expand all"
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">结构型-享元模式 (Flyweight)</h1>
+            
+                <div class="post-meta">
+                    2020-02-16
+                <!--
+                    
+                        <a itemprop="author" rel="author" href="/">Horace</a> 
+                    
+
+                    
+                        <span class="post-time">
+                        发布于 <a href="#">02-16&nbsp;14:15:55</a> ,
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                            
+                                <a href="/categories/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/"># 设计模式</a>
+                            
+                        </span>
+                    
+                -->
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <p><a href="https://emojipedia.org/backhand-index-pointing-right/" target="_blank" rel="noopener">👉</a><a href="https://github.com/zhaohaihao/java-design-patterns/tree/master/110-Flyweight" target="_blank" rel="noopener"><strong>文章示例代码</strong></a><a href="https://emojipedia.org/backhand-index-pointing-left/" target="_blank" rel="noopener">👈</a></p>
+<h1 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h1><blockquote>
+<p>运用共享技术有效地支持大量细粒度的对象。</p>
+</blockquote>
+<p>“享”即共享，“元”指的是元件，也就是小颗粒的东西。“享元”顾名思义就是共享小部件。</p>
+<p>很多的系统程序包含大量的对象，但是这些对象绝大多数都是差不多的，除了一些极个别的属性外。</p>
+<p>那么也就是说，在一个系统程序中有多个相同对象的时候，我们只需要共享一份就可以了，不必去实例化每一个对象。</p>
+<h1 id="内部状态与外部状态"><a href="#内部状态与外部状态" class="headerlink" title="内部状态与外部状态"></a>内部状态与外部状态</h1><p>享元模式是区分内部状态与外部状态的：</p>
+<ul>
+<li><strong>内部状态：</strong>可以共享，在享元对象的内部，状态不会随着环境改变而改变</li>
+<li><strong>外部状态：</strong>不可以共享，在享元对象的外部，状态会随着环境改变而改变</li>
+</ul>
+<h1 id="场景示例"><a href="#场景示例" class="headerlink" title="场景示例"></a>场景示例</h1><p>笔者这里以衣服为例。将衣服的品牌作为内部属性共享，将衣服的大小、成分、价格作为外部属性使用。</p>
+<h2 id="创建衣服类"><a href="#创建衣服类" class="headerlink" title="创建衣服类"></a>创建衣服类</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> zhh</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@description</span> 衣服类</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@date</span> 2020-02-16 22:36</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">Clothes</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 衣服信息</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">info</span><span class="params">()</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="创建衬衣类"><a href="#创建衬衣类" class="headerlink" title="创建衬衣类"></a>创建衬衣类</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> zhh</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@description</span> 衬衣类</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@date</span> 2020-02-16 22:37</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Shirt</span> <span class="keyword">implements</span> <span class="title">Clothes</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 品牌</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> String brand;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 大小</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> String size;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 成分</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> String component;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 价格</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> String price;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Shirt</span><span class="params">(String brand)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.brand = brand;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setSize</span><span class="params">(String size)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.size = size;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setComponent</span><span class="params">(String component)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.component = component;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setPrice</span><span class="params">(String price)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.price = price;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">info</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        System.out.println(String.format(<span class="string">"当前衬衣信息: &#123;品牌: %s, 大小: %s, 成分: %s, 价格: %s&#125;"</span>, brand, size, component, price));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>在该场景中，笔者将品牌属性作为其内部状态，在对象创建的初期就初始化完成，状态不会随着外部环境变化，可以共享。</p>
+<p>而将大小、成分、价格这些属性当做外部状态，通过 <code>setter</code> 方法供外部修改，状态会随外部环境变化，这些属性不能够共享。</p>
+<h2 id="创建衬衣工厂类"><a href="#创建衬衣工厂类" class="headerlink" title="创建衬衣工厂类"></a>创建衬衣工厂类</h2><p>享元模式中通常会出现工厂模式，需要创建一个享元工厂来负责维护一个享元池。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> zhh</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@description</span> 衣服工厂类</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@date</span> 2020-02-16 22:48</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ClothesFactory</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> Map&lt;String, Clothes&gt; CLOTHES_MAP = <span class="keyword">new</span> HashMap&lt;String, Clothes&gt;();</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 获取衬衣</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> brand 品牌</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span></span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Clothes <span class="title">getShirt</span><span class="params">(String brand)</span> </span>&#123;</span><br><span class="line">        Shirt shirt = (Shirt) CLOTHES_MAP.get(brand);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (shirt == <span class="keyword">null</span>) &#123;</span><br><span class="line">            shirt = <span class="keyword">new</span> Shirt(brand);</span><br><span class="line">            CLOTHES_MAP.put(brand, shirt);</span><br><span class="line">            System.out.println(<span class="string">"创建新的品牌衬衣, 品牌为: "</span> + brand);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> shirt;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="测试类及输出"><a href="#测试类及输出" class="headerlink" title="测试类及输出"></a>测试类及输出</h2><p>方便起见，在该测试类中随机模拟数据。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> zhh</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@description</span> 测试类</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@date</span> 2020-02-16 23:04</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Test</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String[] BRAND = &#123;<span class="string">"YOUNGOR雅戈尔"</span>, <span class="string">"FIRS杉杉"</span>, <span class="string">"ROMON罗蒙"</span>, <span class="string">"Hodo红豆"</span>&#125;;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String[] SIZE = &#123;<span class="string">"S"</span>, <span class="string">"M"</span>, <span class="string">"L"</span>, <span class="string">"XL"</span>, <span class="string">"XXL"</span>&#125;;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String[] COMPONENT = &#123;<span class="string">"棉"</span>, <span class="string">"涤纶"</span>, <span class="string">"真丝"</span>&#125;;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String[] PRICE = &#123; <span class="string">"￥99"</span>, <span class="string">"￥129"</span>, <span class="string">"￥149"</span>, <span class="string">"￥199"</span> &#125;;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 随机模拟</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> strs 随机模拟数组</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span></span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> String <span class="title">getRandom</span><span class="params">(String[] strs)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> strs[<span class="keyword">new</span> Random().nextInt(strs.length)];</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">10</span>; i++) &#123;</span><br><span class="line">            Shirt shirt = (Shirt) ClothesFactory.getShirt(getRandom(BRAND));</span><br><span class="line">            shirt.setSize(getRandom(SIZE));</span><br><span class="line">            shirt.setComponent(getRandom(COMPONENT));</span><br><span class="line">            shirt.setPrice(getRandom(PRICE));</span><br><span class="line">            shirt.info();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>测试类的输出结果如下：</p>
+<blockquote>
+<p>创建新的品牌衬衣, 品牌为: ROMON罗蒙<br>当前衬衣信息: {品牌: ROMON罗蒙, 大小: M, 成分: 真丝, 价格: ￥129}<br>创建新的品牌衬衣, 品牌为: FIRS杉杉<br>当前衬衣信息: {品牌: FIRS杉杉, 大小: S, 成分: 棉, 价格: ￥199}<br>当前衬衣信息: {品牌: ROMON罗蒙, 大小: M, 成分: 棉, 价格: ￥99}<br>创建新的品牌衬衣, 品牌为: Hodo红豆<br>当前衬衣信息: {品牌: Hodo红豆, 大小: M, 成分: 棉, 价格: ￥99}<br>当前衬衣信息: {品牌: FIRS杉杉, 大小: XL, 成分: 真丝, 价格: ￥99}<br>当前衬衣信息: {品牌: ROMON罗蒙, 大小: XXL, 成分: 真丝, 价格: ￥99}<br>当前衬衣信息: {品牌: Hodo红豆, 大小: M, 成分: 真丝, 价格: ￥99}<br>当前衬衣信息: {品牌: Hodo红豆, 大小: M, 成分: 涤纶, 价格: ￥149}<br>创建新的品牌衬衣, 品牌为: YOUNGOR雅戈尔<br>当前衬衣信息: {品牌: YOUNGOR雅戈尔, 大小: XXL, 成分: 真丝, 价格: ￥129}<br>当前衬衣信息: {品牌: ROMON罗蒙, 大小: XL, 成分: 涤纶, 价格: ￥199}</p>
+</blockquote>
+<h2 id="类结构图"><a href="#类结构图" class="headerlink" title="类结构图"></a>类结构图</h2><p>以上示例类的结构图如下所示<br><img src="https://oss.zhaohaihao.com/photo/design-patterns/flyweight/flyweight01.png?x-oss-process=style/style01" alt="image.png"></p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><h2 id="适用场景"><a href="#适用场景" class="headerlink" title="适用场景"></a>适用场景</h2><ul>
+<li>应用于系统底层开发，解决系统性能问题。</li>
+<li>系统有大量相似对象，需要缓冲池。</li>
+</ul>
+<h2 id="优点"><a href="#优点" class="headerlink" title="优点"></a>优点</h2><ul>
+<li>共享相同或者相似的细粒度对象，减少对象的创建，降低系统内存，提高效率。</li>
+<li>外部状态相对独立，对象可以在不同的环境中被复用。</li>
+</ul>
+<h2 id="缺点"><a href="#缺点" class="headerlink" title="缺点"></a>缺点</h2><ul>
+<li>读取外部状态使得运行时间变长。</li>
+<li>内部状态与外部状态分离，使得程序的逻辑复杂化。</li>
+</ul>
+<h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><ul>
+<li>《Head First 设计模式》</li>
+<li>《大话设计模式》</li>
+<li><a href="https://zh.wikipedia.org/wiki/%E4%BA%AB%E5%85%83%E6%A8%A1%E5%BC%8F" target="_blank" rel="noopener">维基百科-享元模式</a></li>
+<li><a href="https://www.runoob.com/design-pattern/flyweight-pattern.html" target="_blank" rel="noopener">菜鸟教程-享元模式</a></li>
+</ul>
+
+        </div>
+
+        
+            <section class="post-copyright">
+            
+                
+                
+                
+                
+
+                
+                    <p class="copyright-item" style="text-align: center; margin: 20px 0px;">
+                        <span>© 转载请保留本文地址, 著作权归作者所有</span>
+                    </p>
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <!--<span>Tag(s):</span>-->
+                <span class="tag">
+                    
+                    
+                        <a href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/"># 设计模式</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">返回上层</a>
+                <span>· </span>
+                <a href="/">返回主页</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/posts/2020022601.html">结构型-桥接模式 (Bridge)</a>
+            
+            
+            <a class="next" rel="next" href="/posts/2020021402.html">结构型-组合模式 (Composite)</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+        </div>
+        
+	<footer id="footer" class="footer" style="line-height: unset;">
+	    <div class="copyright" style="text-align: center;">
+	        本站已安全运行 <span id="htmer_time">0年293天1时59分51秒</span></br>
+	        <span>© 2019-2020 Horace&#39;s Blog.</span>
+	    </div>
+	</footer>
+
+	<script language="javascript">
+    function siteTime(){
+        window.setTimeout("siteTime()", 1000);
+        var seconds = 1000;
+        var minutes = seconds * 60;
+        var hours = minutes * 60;
+        var days = hours * 24;
+        var years = days * 365;
+        var today = new Date();
+        var todayYear = today.getFullYear();
+        var todayMonth = today.getMonth()+1;
+        var todayDate = today.getDate();
+        var todayHour = today.getHours();
+        var todayMinute = today.getMinutes();
+        var todaySecond = today.getSeconds();
+        /* Date.UTC() -- 返回date对象距世界标准时间(UTC)1970年1月1日午夜之间的毫秒数(时间戳)
+        year - 作为date对象的年份，为4位年份值
+        month - 0-11之间的整数，做为date对象的月份
+        day - 1-31之间的整数，做为date对象的天数
+        hours - 0(午夜24点)-23之间的整数，做为date对象的小时数
+        minutes - 0-59之间的整数，做为date对象的分钟数
+        seconds - 0-59之间的整数，做为date对象的秒数
+        microseconds - 0-999之间的整数，做为date对象的毫秒数 */
+        var t1 = Date.UTC(2019,6,12,22,22,22); //北京时间2016-12-1 00:00:00
+        var t2 = Date.UTC(todayYear,todayMonth,todayDate,todayHour,todayMinute,todaySecond);
+        var diff = t2-t1;
+        var diffYears = Math.floor(diff/years);
+        var diffDays = Math.floor((diff/days)-diffYears*365);
+        var diffHours = Math.floor((diff-(diffYears*365+diffDays)*days)/hours);
+        var diffMinutes = Math.floor((diff-(diffYears*365+diffDays)*days-diffHours*hours)/minutes);
+        var diffSeconds = Math.floor((diff-(diffYears*365+diffDays)*days-diffHours*hours-diffMinutes*minutes)/seconds);
+        document.getElementById("htmer_time").innerHTML=diffYears+"年"+diffDays+"天"+diffHours+"时"+diffMinutes+"分"+diffSeconds+"秒";
+    }
+    siteTime();
+</script>
+
+    </div>
+</body>
+</html>

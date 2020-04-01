@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="Horace">
+
+
+
+
+
+
+    <title>结构型-装饰器模式 (Decorator) | Horace&#39;s Blog</title>
+    
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+<body>
+	<script type="text/javascript" src="/js/canvas-colorful-nest.js"></script>
+    <div class="wrapper">
+        <header>
+    
+        <nav class="navbar">
+            <div class="container">
+                <div class="navbar-header header-logo"><a href="/">Horace&#39;s Blog</a></div>
+                <div class="menu navbar-right">
+                    
+                        <a class="menu-item" href="/archives">归档</a>
+                    
+                        <a class="menu-item" href="/categories">分类</a>
+                    
+                        <a class="menu-item" href="/tags">标签</a>
+                    
+                        <a class="menu-item" href="/about">关于</a>
+                    
+                    <input id="switch_default" type="checkbox" class="switch_default">
+                    <label for="switch_default" class="toggleBtn"></label>
+                </div>
+            </div>
+        </nav>
+
+        
+        <nav class="navbar-mobile" id="nav-mobile">
+            <div class="container">
+                <div class="navbar-header">
+                    <div>
+                        <a href="/">Horace&#39;s Blog</a>
+                    </div>
+                    <div style="display: inherit;">
+                        <div><a id="mobile-toggle-theme">Light</a></div>
+                        <div class="menu-toggle" onclick="mobileBtn()" style="padding-left: 15px;">&#9776;菜单</div>
+                    </div>
+                    
+                </div>
+                <div class="menu" id="mobile-menu">
+                    
+                        <a class="menu-item" href="/archives">归档</a>
+                    
+                        <a class="menu-item" href="/categories">分类</a>
+                    
+                        <a class="menu-item" href="/tags">标签</a>
+                    
+                        <a class="menu-item" href="/about">关于</a>
+                    
+                </div>
+            </div>
+        </nav>
+    
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+           mobileMenu.classList.remove("active")
+        }else{
+           toggleMenu.classList.add("active")
+           mobileMenu.classList.add("active")
+        }
+    }
+</script>
+        <div class="main">
+            <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <!--<a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>-->
+        <a onclick="go_top()">返回页首</a>
+        <a onclick="go_bottom()">转到底部</a>
+    </div>
+</div>
+
+<script>
+    document.ready(
+        function () {
+            tocbot.init({
+                tocSelector: '.tocbot-list',
+                contentSelector: '.post-content',
+                headingSelector: 'h1, h2, h3, h4, h5',
+                collapseDepth: 1,
+                orderedList: false,
+                scrollSmooth: true,
+            })
+        }
+    )
+
+    function expand_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 6,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "collapse_toc()");
+        b.innerHTML = "Collapse all"
+    }
+
+    function collapse_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 1,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "expand_toc()");
+        b.innerHTML = "Expand all"
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">结构型-装饰器模式 (Decorator)</h1>
+            
+                <div class="post-meta">
+                    2020-02-14
+                <!--
+                    
+                        <a itemprop="author" rel="author" href="/">Horace</a> 
+                    
+
+                    
+                        <span class="post-time">
+                        发布于 <a href="#">02-14&nbsp;9:55:33</a> ,
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                            
+                                <a href="/categories/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/"># 设计模式</a>
+                            
+                        </span>
+                    
+                -->
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <p><a href="https://emojipedia.org/backhand-index-pointing-right/" target="_blank" rel="noopener">👉</a><a href="https://github.com/zhaohaihao/java-design-patterns/tree/master/108-Decorator" target="_blank" rel="noopener"><strong>文章示例代码</strong></a><a href="https://emojipedia.org/backhand-index-pointing-left/" target="_blank" rel="noopener">👈</a></p>
+<p>装饰器模式对于笔者来说，印象还是比较深刻的。因为当年笔者考软件设计师的设计模式大题考的就是这个模式，差点阵亡。</p>
+<h1 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h1><blockquote>
+<p>动态地为一个对象添加一些额外的职责。</p>
+</blockquote>
+<p>在扩展原有对象功能上，装饰器模式比继承的方式更加灵活。</p>
+<h1 id="模式中的角色"><a href="#模式中的角色" class="headerlink" title="模式中的角色"></a>模式中的角色</h1><ul>
+<li>抽象构建(Component)：定义一个抽象接口(可以是抽象类)，用以给对象动态地添加职责。</li>
+<li>具体构建(ConcreteComponent)：定义一个具体的对象，实现Component接口。</li>
+<li>抽象装饰者(Decorator)：继承Component，用有Component的职责，同时也可以扩展职责。</li>
+<li>具体装饰者(ConcretorDecorator)：负责给具体的构建对象添加职责，同时可以定义额外的职责。</li>
+</ul>
+<h1 id="场景示例"><a href="#场景示例" class="headerlink" title="场景示例"></a>场景示例</h1><p>笔者作为一点点的重度爱好者，这里就以奶茶为例。</p>
+<h2 id="创建抽象构建"><a href="#创建抽象构建" class="headerlink" title="创建抽象构建"></a>创建抽象构建</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> zhh</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@description</span> 抽象奶茶类</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@date</span> 2020-02-13 23:30</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">AbstractMilkyTea</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 描述</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">abstract</span> String <span class="title">desc</span><span class="params">()</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 价格</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">abstract</span> <span class="keyword">int</span> <span class="title">price</span><span class="params">()</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="创建具体构建"><a href="#创建具体构建" class="headerlink" title="创建具体构建"></a>创建具体构建</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> zhh</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@description</span> 具体奶茶类</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@date</span> 2020-02-13 23:35</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MilkyTea</span> <span class="keyword">extends</span> <span class="title">AbstractMilkyTea</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> String <span class="title">desc</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">"奶茶"</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">int</span> <span class="title">price</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">7</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="创建抽象装饰者"><a href="#创建抽象装饰者" class="headerlink" title="创建抽象装饰者"></a>创建抽象装饰者</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> zhh</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@description</span> 抽象装饰者类</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@date</span> 2020-02-13 23:37</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">AbstractDecorator</span> <span class="keyword">extends</span> <span class="title">AbstractMilkyTea</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> AbstractMilkyTea abstractMilkyTea;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">AbstractDecorator</span><span class="params">(AbstractMilkyTea abstractMilkyTea)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.abstractMilkyTea = abstractMilkyTea;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> String <span class="title">desc</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">this</span>.abstractMilkyTea.desc();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">int</span> <span class="title">price</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">this</span>.abstractMilkyTea.price();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这里抽象装饰者继承了抽象奶茶类。</p>
+<p>这个时候，具体奶茶类和抽象装饰者类都作为抽象奶茶类的子类。</p>
+<p>我们可以通过具体奶茶类和抽象装饰者类继承的父类(抽象奶茶类)进行组合让这两个子类建立关系。</p>
+<h2 id="创建具体装饰者"><a href="#创建具体装饰者" class="headerlink" title="创建具体装饰者"></a>创建具体装饰者</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> zhh</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@description</span> 糖装饰者</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@date</span> 2020-02-13 23:58</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SugarDecorator</span> <span class="keyword">extends</span> <span class="title">AbstractDecorator</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">SugarDecorator</span><span class="params">(AbstractMilkyTea abstractMilkyTea)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>(abstractMilkyTea);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> String <span class="title">desc</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">super</span>.desc() + <span class="string">" 加糖"</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">int</span> <span class="title">price</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">super</span>.price() + <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> zhh</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@description</span> 红豆装饰者</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@date</span> 2020-02-14 00:14</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">RedBeanDecorator</span> <span class="keyword">extends</span> <span class="title">AbstractDecorator</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">RedBeanDecorator</span><span class="params">(AbstractMilkyTea abstractMilkyTea)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>(abstractMilkyTea);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> String <span class="title">desc</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">super</span>.desc() + <span class="string">" 加红豆"</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">int</span> <span class="title">price</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">super</span>.price() + <span class="number">2</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> zhh</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@description</span> 珍珠装饰者</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@date</span> 2020-02-13 23:56</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">PearlDecorator</span> <span class="keyword">extends</span> <span class="title">AbstractDecorator</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">PearlDecorator</span><span class="params">(AbstractMilkyTea abstractMilkyTea)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>(abstractMilkyTea);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> String <span class="title">desc</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">super</span>.desc() + <span class="string">" 加珍珠"</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">int</span> <span class="title">price</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">super</span>.price() + <span class="number">2</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="测试类及输出"><a href="#测试类及输出" class="headerlink" title="测试类及输出"></a>测试类及输出</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> zhh</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@description</span> 测试类</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@date</span> 2020-02-14 00:21</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Test</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        AbstractMilkyTea abstractMilkyTea = <span class="keyword">new</span> MilkyTea();</span><br><span class="line">        abstractMilkyTea = <span class="keyword">new</span> SugarDecorator(abstractMilkyTea);</span><br><span class="line">        abstractMilkyTea = <span class="keyword">new</span> PearlDecorator(abstractMilkyTea);</span><br><span class="line">        System.out.println(abstractMilkyTea.desc() + <span class="string">" 的销售价格是:"</span> + abstractMilkyTea.price());</span><br><span class="line"></span><br><span class="line">        abstractMilkyTea = <span class="keyword">new</span> MilkyTea();</span><br><span class="line">        abstractMilkyTea = <span class="keyword">new</span> RedBeanDecorator(abstractMilkyTea);</span><br><span class="line">        abstractMilkyTea = <span class="keyword">new</span> PearlDecorator(abstractMilkyTea);</span><br><span class="line">        System.out.println(abstractMilkyTea.desc() + <span class="string">" 的销售价格是:"</span> + abstractMilkyTea.price());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>测试类输出的结果如下：</p>
+<blockquote>
+<p>奶茶 加糖 加珍珠 的销售价格是:10<br>奶茶 加红豆 加珍珠 的销售价格是:11</p>
+</blockquote>
+<h2 id="类结构图"><a href="#类结构图" class="headerlink" title="类结构图"></a>类结构图</h2><p>以上示例类的结构图如下所示<br><img src="https://oss.zhaohaihao.com/photo/design-patterns/decorator/decorator01.png?x-oss-process=style/style01" alt="image.png"></p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><h2 id="适用场景"><a href="#适用场景" class="headerlink" title="适用场景"></a>适用场景</h2><ul>
+<li>给一个类添加额外的职责</li>
+<li>动态的为一个对象添加功能同时可以动态撤销</li>
+</ul>
+<h2 id="优点"><a href="#优点" class="headerlink" title="优点"></a>优点</h2><ul>
+<li>比继承更加灵活，易扩展。可以在不改变原有对象的情况下给一个对象扩展功能。</li>
+<li>解耦。装饰类和被装饰者可以独立变化，不会相互耦合。</li>
+</ul>
+<h2 id="缺点"><a href="#缺点" class="headerlink" title="缺点"></a>缺点</h2><p>会导致代码和类的骤增，增加程序复杂性。</p>
+<h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><ul>
+<li>《Head First 设计模式》</li>
+<li>《大话设计模式》</li>
+<li><a href="https://zh.wikipedia.org/wiki/%E4%BF%AE%E9%A5%B0%E6%A8%A1%E5%BC%8F" target="_blank" rel="noopener">维基百科-修饰模式</a></li>
+<li><a href="https://www.runoob.com/design-pattern/decorator-pattern.html" target="_blank" rel="noopener">菜鸟教程-装饰器模式</a></li>
+</ul>
+
+        </div>
+
+        
+            <section class="post-copyright">
+            
+                
+                
+                
+                
+
+                
+                    <p class="copyright-item" style="text-align: center; margin: 20px 0px;">
+                        <span>© 转载请保留本文地址, 著作权归作者所有</span>
+                    </p>
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <!--<span>Tag(s):</span>-->
+                <span class="tag">
+                    
+                    
+                        <a href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/"># 设计模式</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">返回上层</a>
+                <span>· </span>
+                <a href="/">返回主页</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/posts/2020021402.html">结构型-适配器模式 (Adapter)</a>
+            
+            
+            <a class="next" rel="next" href="/posts/2020021302.html">结构型-外观模式 (Facade)</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+        </div>
+        
+	<footer id="footer" class="footer" style="line-height: unset;">
+	    <div class="copyright" style="text-align: center;">
+	        本站已安全运行 <span id="htmer_time">0年293天1时59分51秒</span></br>
+	        <span>© 2019-2020 Horace&#39;s Blog.</span>
+	    </div>
+	</footer>
+
+	<script language="javascript">
+    function siteTime(){
+        window.setTimeout("siteTime()", 1000);
+        var seconds = 1000;
+        var minutes = seconds * 60;
+        var hours = minutes * 60;
+        var days = hours * 24;
+        var years = days * 365;
+        var today = new Date();
+        var todayYear = today.getFullYear();
+        var todayMonth = today.getMonth()+1;
+        var todayDate = today.getDate();
+        var todayHour = today.getHours();
+        var todayMinute = today.getMinutes();
+        var todaySecond = today.getSeconds();
+        /* Date.UTC() -- 返回date对象距世界标准时间(UTC)1970年1月1日午夜之间的毫秒数(时间戳)
+        year - 作为date对象的年份，为4位年份值
+        month - 0-11之间的整数，做为date对象的月份
+        day - 1-31之间的整数，做为date对象的天数
+        hours - 0(午夜24点)-23之间的整数，做为date对象的小时数
+        minutes - 0-59之间的整数，做为date对象的分钟数
+        seconds - 0-59之间的整数，做为date对象的秒数
+        microseconds - 0-999之间的整数，做为date对象的毫秒数 */
+        var t1 = Date.UTC(2019,6,12,22,22,22); //北京时间2016-12-1 00:00:00
+        var t2 = Date.UTC(todayYear,todayMonth,todayDate,todayHour,todayMinute,todaySecond);
+        var diff = t2-t1;
+        var diffYears = Math.floor(diff/years);
+        var diffDays = Math.floor((diff/days)-diffYears*365);
+        var diffHours = Math.floor((diff-(diffYears*365+diffDays)*days)/hours);
+        var diffMinutes = Math.floor((diff-(diffYears*365+diffDays)*days-diffHours*hours)/minutes);
+        var diffSeconds = Math.floor((diff-(diffYears*365+diffDays)*days-diffHours*hours-diffMinutes*minutes)/seconds);
+        document.getElementById("htmer_time").innerHTML=diffYears+"年"+diffDays+"天"+diffHours+"时"+diffMinutes+"分"+diffSeconds+"秒";
+    }
+    siteTime();
+</script>
+
+    </div>
+</body>
+</html>

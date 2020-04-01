@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="Horace">
+
+
+
+
+
+
+    <title>结构型-代理模式 (Proxy) | Horace&#39;s Blog</title>
+    
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+<body>
+	<script type="text/javascript" src="/js/canvas-colorful-nest.js"></script>
+    <div class="wrapper">
+        <header>
+    
+        <nav class="navbar">
+            <div class="container">
+                <div class="navbar-header header-logo"><a href="/">Horace&#39;s Blog</a></div>
+                <div class="menu navbar-right">
+                    
+                        <a class="menu-item" href="/archives">归档</a>
+                    
+                        <a class="menu-item" href="/categories">分类</a>
+                    
+                        <a class="menu-item" href="/tags">标签</a>
+                    
+                        <a class="menu-item" href="/about">关于</a>
+                    
+                    <input id="switch_default" type="checkbox" class="switch_default">
+                    <label for="switch_default" class="toggleBtn"></label>
+                </div>
+            </div>
+        </nav>
+
+        
+        <nav class="navbar-mobile" id="nav-mobile">
+            <div class="container">
+                <div class="navbar-header">
+                    <div>
+                        <a href="/">Horace&#39;s Blog</a>
+                    </div>
+                    <div style="display: inherit;">
+                        <div><a id="mobile-toggle-theme">Light</a></div>
+                        <div class="menu-toggle" onclick="mobileBtn()" style="padding-left: 15px;">&#9776;菜单</div>
+                    </div>
+                    
+                </div>
+                <div class="menu" id="mobile-menu">
+                    
+                        <a class="menu-item" href="/archives">归档</a>
+                    
+                        <a class="menu-item" href="/categories">分类</a>
+                    
+                        <a class="menu-item" href="/tags">标签</a>
+                    
+                        <a class="menu-item" href="/about">关于</a>
+                    
+                </div>
+            </div>
+        </nav>
+    
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+           mobileMenu.classList.remove("active")
+        }else{
+           toggleMenu.classList.add("active")
+           mobileMenu.classList.add("active")
+        }
+    }
+</script>
+        <div class="main">
+            <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <!--<a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>-->
+        <a onclick="go_top()">返回页首</a>
+        <a onclick="go_bottom()">转到底部</a>
+    </div>
+</div>
+
+<script>
+    document.ready(
+        function () {
+            tocbot.init({
+                tocSelector: '.tocbot-list',
+                contentSelector: '.post-content',
+                headingSelector: 'h1, h2, h3, h4, h5',
+                collapseDepth: 1,
+                orderedList: false,
+                scrollSmooth: true,
+            })
+        }
+    )
+
+    function expand_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 6,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "collapse_toc()");
+        b.innerHTML = "Collapse all"
+    }
+
+    function collapse_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 1,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "expand_toc()");
+        b.innerHTML = "Expand all"
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">结构型-代理模式 (Proxy)</h1>
+            
+                <div class="post-meta">
+                    2020-02-26
+                <!--
+                    
+                        <a itemprop="author" rel="author" href="/">Horace</a> 
+                    
+
+                    
+                        <span class="post-time">
+                        发布于 <a href="#">02-26&nbsp;15:02:01</a> ,
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                            
+                                <a href="/categories/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/"># 设计模式</a>
+                            
+                        </span>
+                    
+                -->
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <p><a href="https://emojipedia.org/backhand-index-pointing-right/" target="_blank" rel="noopener">👉</a><a href="https://github.com/zhaohaihao/java-design-patterns/tree/master/113-Proxy" target="_blank" rel="noopener"><strong>文章示例代码</strong></a><a href="https://emojipedia.org/backhand-index-pointing-left/" target="_blank" rel="noopener">👈</a></p>
+<h1 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h1><blockquote>
+<p>为其他对象提供一种代理用来控制对这个对象的访问。</p>
+</blockquote>
+<p>在代理模式中，代理对象作为访问对象和目标对象之间的中介。</p>
+<h1 id="场景示例"><a href="#场景示例" class="headerlink" title="场景示例"></a>场景示例</h1><p>笔者这里以购买火车票为例。我们购买火车票不一定要去火车站购买，我们可以通过12306网站或者去火车票代售点购买。</p>
+<h2 id="基于继承的静态代理实现"><a href="#基于继承的静态代理实现" class="headerlink" title="基于继承的静态代理实现"></a>基于继承的静态代理实现</h2><h3 id="创建目标对象"><a href="#创建目标对象" class="headerlink" title="创建目标对象"></a>创建目标对象</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> zhh</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@description</span> 火车站(目标对象)</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@date</span> 2020-02-26 21:44</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Station</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 姓名</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> String username;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 始发站</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> String start;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 终点站</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> String end;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Station</span><span class="params">(String username, String start, String end)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.username = username;</span><br><span class="line">        <span class="keyword">this</span>.start = start;</span><br><span class="line">        <span class="keyword">this</span>.end = end;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 此处省略getter、setter方法</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">buy</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        System.out.println(String.format(<span class="string">"%s购买了从%s至%s的火车票"</span>, username, start, end));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="创建代理对象"><a href="#创建代理对象" class="headerlink" title="创建代理对象"></a>创建代理对象</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> zhh</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@description</span> 12306网站类(代理对象)</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@date</span> 2020-02-26 21:47</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Website12306</span> <span class="keyword">extends</span> <span class="title">Station</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Website12306</span><span class="params">(String username, String start, String end)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>(username, start, end);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">buy</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="comment">// 模拟日志打印</span></span><br><span class="line">        System.out.println(String.format(<span class="string">"【打印日志】 %s在12306平台上购买从%s至%s的火车票"</span>, getUsername(), getStart(), getEnd()));</span><br><span class="line">        <span class="keyword">super</span>.buy();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="测试类及输出"><a href="#测试类及输出" class="headerlink" title="测试类及输出"></a>测试类及输出</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> zhh</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@description</span> 测试类</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@date</span> 2020-02-26 21:54</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Test</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        Station station = <span class="keyword">new</span> Website12306(<span class="string">"海豪"</span>, <span class="string">"诸暨"</span>, <span class="string">"杭州"</span>);</span><br><span class="line">        station.buy();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>测试类的输出结果如下：</p>
+<blockquote>
+<p>【打印日志】 海豪在12306平台上购买从诸暨至杭州的火车票<br>海豪购买了从诸暨至杭州的火车票</p>
+</blockquote>
+<h3 id="类结构图"><a href="#类结构图" class="headerlink" title="类结构图"></a>类结构图</h3><p>以上示例类的结构图如下所示<br><img src="https://oss.zhaohaihao.com/photo/design-patterns/proxy/proxy01.png?x-oss-process=style/style01" alt="image.png"></p>
+<p>从上述示例代码中，我们可以看到，代理对象中的 <code>buy()</code> 方法实际上最终调用的是目标对象的 <code>buy()</code> 方法，同时我们也可以在代理对象中对方法进行增强。</p>
+<h2 id="基于接口的静态代理实现"><a href="#基于接口的静态代理实现" class="headerlink" title="基于接口的静态代理实现"></a>基于接口的静态代理实现</h2><h3 id="创建抽象接口"><a href="#创建抽象接口" class="headerlink" title="创建抽象接口"></a>创建抽象接口</h3><p>可以是接口也可以是抽象类。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> zhh</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@description</span> 抽象接口</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@date</span> 2020-02-26 21:44</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">Station</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">buy</span><span class="params">()</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="创建目标对象-1"><a href="#创建目标对象-1" class="headerlink" title="创建目标对象"></a>创建目标对象</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> zhh</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@description</span> 诸暨火车站(目标对象)</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@date</span> 2020-02-26 22:10</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ZhuJiStation</span> <span class="keyword">implements</span> <span class="title">Station</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 姓名</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> String username;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 始发站</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> String start;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 终点站</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> String end;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">ZhuJiStation</span><span class="params">(String username, String start, String end)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.username = username;</span><br><span class="line">        <span class="keyword">this</span>.start = start;</span><br><span class="line">        <span class="keyword">this</span>.end = end;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 此处省略getter、setter方法</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">buy</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        System.out.println(String.format(<span class="string">"%s购买了从%s至%s的火车票"</span>, username, start, end));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="创建代理对象-1"><a href="#创建代理对象-1" class="headerlink" title="创建代理对象"></a>创建代理对象</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> zhh</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@description</span> 12306网站类(代理对象)</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@date</span> 2020-02-26 21:47</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Website12306</span> <span class="keyword">implements</span> <span class="title">Station</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 姓名</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> String username;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 始发站</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> String start;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 终点站</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> String end;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> Station station;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Website12306</span><span class="params">(String username, String start, String end)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.username = username;</span><br><span class="line">        <span class="keyword">this</span>.start = start;</span><br><span class="line">        <span class="keyword">this</span>.end = end;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">buy</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="comment">// 模拟日志打印</span></span><br><span class="line">        System.out.println(String.format(<span class="string">"【打印日志】 %s在12306平台上购买从%s至%s的火车票"</span>, username, start, end));</span><br><span class="line">        <span class="keyword">if</span> (station == <span class="keyword">null</span>) &#123;</span><br><span class="line">            station = <span class="keyword">new</span> ZhuJiStation(username, start, end);</span><br><span class="line">        &#125;</span><br><span class="line">        station.buy();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="测试类及输出-1"><a href="#测试类及输出-1" class="headerlink" title="测试类及输出"></a>测试类及输出</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> zhh</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@description</span> 测试类</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@date</span> 2020-02-26 21:54</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Test</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        Station station = <span class="keyword">new</span> Website12306(<span class="string">"海豪"</span>, <span class="string">"诸暨"</span>, <span class="string">"杭州"</span>);</span><br><span class="line">        station.buy();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>测试类的输出结果如下：</p>
+<blockquote>
+<p>【打印日志】 海豪在12306平台上购买从诸暨至杭州的火车票<br>海豪购买了从诸暨至杭州的火车票</p>
+</blockquote>
+<h3 id="类结构图-1"><a href="#类结构图-1" class="headerlink" title="类结构图"></a>类结构图</h3><p>以上示例类的结构图如下所示<br><img src="https://oss.zhaohaihao.com/photo/design-patterns/proxy/proxy02.png?x-oss-process=style/style01" alt="image.png"></p>
+<p>这种方式需要目标对象和代理对象实现同一个接口或者继承同一个抽象类。</p>
+<h2 id="基于JDK动态代理实现"><a href="#基于JDK动态代理实现" class="headerlink" title="基于JDK动态代理实现"></a>基于JDK动态代理实现</h2><p>基于JDK动态代理的实现，主要依赖的是 <code>Proxy</code> 类的 <code>newProxyInstance()</code> 方法和 <code>InvocationHandler</code> 类的 <code>invoke()</code> 方法。</p>
+<p>而且JDK动态代理不能够代理类，只能够基于接口实现。</p>
+<h3 id="创建抽象接口-1"><a href="#创建抽象接口-1" class="headerlink" title="创建抽象接口"></a>创建抽象接口</h3><p>这个地方只能是接口。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> zhh</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@description</span> 抽象接口</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@date</span> 2020-02-26 21:44</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">Station</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">buy</span><span class="params">()</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="创建目标对象-2"><a href="#创建目标对象-2" class="headerlink" title="创建目标对象"></a>创建目标对象</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> zhh</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@description</span> 诸暨火车站(目标对象)</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@date</span> 2020-02-26 22:10</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ZhuJiStation</span> <span class="keyword">implements</span> <span class="title">Station</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 姓名</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> String username;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 始发站</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> String start;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 终点站</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> String end;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">ZhuJiStation</span><span class="params">(String username, String start, String end)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.username = username;</span><br><span class="line">        <span class="keyword">this</span>.start = start;</span><br><span class="line">        <span class="keyword">this</span>.end = end;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 此处省略getter、setter方法</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">buy</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        System.out.println(String.format(<span class="string">"%s购买了从%s至%s的火车票"</span>, username, start, end));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="创建动态代理类"><a href="#创建动态代理类" class="headerlink" title="创建动态代理类"></a>创建动态代理类</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> zhh</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@description</span> 动态代理类</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@date</span> 2020-02-26 22:32</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">StationDynamicProxy</span> <span class="keyword">implements</span> <span class="title">InvocationHandler</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> Object target;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">StationDynamicProxy</span><span class="params">(Object target)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.target = target;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Object <span class="title">bind</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        Class clazz = target.getClass();</span><br><span class="line">        <span class="keyword">return</span> Proxy.newProxyInstance(clazz.getClassLoader(), clazz.getInterfaces(), <span class="keyword">this</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Object <span class="title">invoke</span><span class="params">(Object proxy, Method method, Object[] args)</span> <span class="keyword">throws</span> Throwable </span>&#123;</span><br><span class="line">        <span class="comment">// 模拟日志打印</span></span><br><span class="line">        System.out.println(<span class="string">"【日志打印】真实操作之前进行日志打印"</span>);</span><br><span class="line">        <span class="keyword">return</span> method.invoke(target, args);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="测试类及输出-2"><a href="#测试类及输出-2" class="headerlink" title="测试类及输出"></a>测试类及输出</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> zhh</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@description</span> 测试类</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@date</span> 2020-02-26 21:54</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Test</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        Station station = (Station) <span class="keyword">new</span> StationDynamicProxy(<span class="keyword">new</span> ZhuJiStation(<span class="string">"海豪"</span>, <span class="string">"诸暨"</span>, <span class="string">"杭州"</span>)).bind();</span><br><span class="line">        station.buy();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>测试类的输出结果如下：</p>
+<blockquote>
+<p>【日志打印】真实操作之前进行日志打印<br>海豪购买了从诸暨至杭州的火车票</p>
+</blockquote>
+<h3 id="类结构图-2"><a href="#类结构图-2" class="headerlink" title="类结构图"></a>类结构图</h3><p>以上示例类的结构图如下所示<br><img src="https://oss.zhaohaihao.com/photo/design-patterns/proxy/proxy03.png?x-oss-process=style/style01" alt="image.png"></p>
+<h2 id="基于CGLib动态代理实现"><a href="#基于CGLib动态代理实现" class="headerlink" title="基于CGLib动态代理实现"></a>基于CGLib动态代理实现</h2><p>CGLib是针对于类的代理模式，使用CGLib就必须实现 <code>MethodInterceptor</code> 接口。</p>
+<h3 id="创建目标对象-3"><a href="#创建目标对象-3" class="headerlink" title="创建目标对象"></a>创建目标对象</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> zhh</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@description</span> 诸暨火车站(目标对象)</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@date</span> 2020-02-26 22:10</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ZhuJiStation</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 姓名</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> String username;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 始发站</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> String start;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 终点站</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> String end;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 此处忽略getter、setter方法</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">buy</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        System.out.println(String.format(<span class="string">"%s购买了从%s至%s的火车票"</span>, username, start, end));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="创建动态代理类-1"><a href="#创建动态代理类-1" class="headerlink" title="创建动态代理类"></a>创建动态代理类</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> zhh</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@description</span> 动态代理类</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@date</span> 2020-02-26 22:32</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">StationDynamicProxy</span> <span class="keyword">implements</span> <span class="title">MethodInterceptor</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Object <span class="title">intercept</span><span class="params">(Object o, Method method, Object[] objects, MethodProxy methodProxy)</span> <span class="keyword">throws</span> Throwable </span>&#123;</span><br><span class="line">        <span class="comment">// 模拟日志打印</span></span><br><span class="line">        System.out.println(<span class="string">"【日志打印】真实操作之前进行日志打印"</span>);</span><br><span class="line">        <span class="keyword">return</span> methodProxy.invokeSuper(o, objects);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="测试类及输出-3"><a href="#测试类及输出-3" class="headerlink" title="测试类及输出"></a>测试类及输出</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> zhh</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@description</span> 测试类</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@date</span> 2020-02-26 21:54</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Test</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        Enhancer enhancer = <span class="keyword">new</span> Enhancer();</span><br><span class="line">        enhancer.setSuperclass(ZhuJiStation<span class="class">.<span class="keyword">class</span>)</span>;</span><br><span class="line">        enhancer.setCallback(<span class="keyword">new</span> StationDynamicProxy());</span><br><span class="line">        ZhuJiStation proxy = (ZhuJiStation) enhancer.create();</span><br><span class="line">        proxy.setUsername(<span class="string">"海豪"</span>);</span><br><span class="line">        proxy.setStart(<span class="string">"诸暨"</span>);</span><br><span class="line">        proxy.setEnd(<span class="string">"杭州"</span>);</span><br><span class="line">        proxy.buy();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>测试类的输出结果如下：</p>
+<blockquote>
+<p>【日志打印】真实操作之前进行日志打印<br>【日志打印】真实操作之前进行日志打印<br>【日志打印】真实操作之前进行日志打印<br>【日志打印】真实操作之前进行日志打印<br>海豪购买了从诸暨至杭州的火车票</p>
+</blockquote>
+<h3 id="类结构图-3"><a href="#类结构图-3" class="headerlink" title="类结构图"></a>类结构图</h3><p>以上示例类的结构图如下所示<br><img src="https://oss.zhaohaihao.com/photo/design-patterns/proxy/proxy04.png?x-oss-process=style/style01" alt="image.png"></p>
+<p>CGLib摆脱了对于 <code>Proxy</code> 的依赖，从而避免了创建代理类必须继承 <code>Proxy</code> 的限制。</p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><h2 id="适用场景"><a href="#适用场景" class="headerlink" title="适用场景"></a>适用场景</h2><p>访问对象不适合或者不能直接引用目标对象。</p>
+<h2 id="优点"><a href="#优点" class="headerlink" title="优点"></a>优点</h2><ul>
+<li>将访问对象和目标对象分离，降低了系统的耦合度。</li>
+<li>扩展性好，可以扩展目标对象的功能。</li>
+<li>可以保护、增强目标对象。</li>
+</ul>
+<h2 id="缺点"><a href="#缺点" class="headerlink" title="缺点"></a>缺点</h2><ul>
+<li>增加了系统的复杂度。</li>
+<li>在客户端和目标对象之间增加一个代理对象，会造成请求处理速度变慢。</li>
+</ul>
+<h2 id="扩展"><a href="#扩展" class="headerlink" title="扩展"></a>扩展</h2><h3 id="代理方式"><a href="#代理方式" class="headerlink" title="代理方式"></a>代理方式</h3><ul>
+<li><strong>静态代理</strong>：通过在代码中显示地定义一个业务实现类的一个代理，在代理类中对同名的业务方法进行包装，用户通过调用代理类的被包装过的业务方法来调用目标对象的业务方法。同时对目标对象的业务方法进行增强。</li>
+<li><strong>JDK动态代理</strong>：是通过接口中的方法名，在动态生成的代理类中调用业务实现类的同名方法。</li>
+<li><strong>CGLib动态代理</strong>：是通过继承来实现的，生成的动态代理类是业务类的子类，通过重写业务方法进行代理。</li>
+</ul>
+<h3 id="Spring代理选择"><a href="#Spring代理选择" class="headerlink" title="Spring代理选择"></a>Spring代理选择</h3><ul>
+<li>当Spring中的Bean有实现接口时，Spring会用JDK的动态代理。</li>
+<li>当Spring中的Bean没有实现接口时，Spring会使用CGLib动态代理。</li>
+</ul>
+<p>可以强制Spring使用CGLib动态代理(在Spring的配置中添加 <code>&lt;aop:aspectj-autoproxy proxy-target-class=&quot;true&quot;</code> )。</p>
+<h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><ul>
+<li>《Head First 设计模式》</li>
+<li>《大话设计模式》</li>
+<li><a href="https://zh.wikipedia.org/wiki/%E4%BB%A3%E7%90%86%E6%A8%A1%E5%BC%8F" target="_blank" rel="noopener">维基百科-代理模式</a></li>
+<li><a href="https://www.runoob.com/design-pattern/proxy-pattern.html" target="_blank" rel="noopener">菜鸟教程-代理模式</a></li>
+<li><a href="https://blog.csdn.net/weixin_41043145/article/details/97613108" target="_blank" rel="noopener">代理模式(静态代理、动态代理、CGLIB代理)</a></li>
+</ul>
+
+        </div>
+
+        
+            <section class="post-copyright">
+            
+                
+                
+                
+                
+
+                
+                    <p class="copyright-item" style="text-align: center; margin: 20px 0px;">
+                        <span>© 转载请保留本文地址, 著作权归作者所有</span>
+                    </p>
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <!--<span>Tag(s):</span>-->
+                <span class="tag">
+                    
+                    
+                        <a href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/"># 设计模式</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">返回上层</a>
+                <span>· </span>
+                <a href="/">返回主页</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+            
+            <a class="next" rel="next" href="/posts/2020022601.html">结构型-桥接模式 (Bridge)</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+        </div>
+        
+	<footer id="footer" class="footer" style="line-height: unset;">
+	    <div class="copyright" style="text-align: center;">
+	        本站已安全运行 <span id="htmer_time">0年293天1时59分51秒</span></br>
+	        <span>© 2019-2020 Horace&#39;s Blog.</span>
+	    </div>
+	</footer>
+
+	<script language="javascript">
+    function siteTime(){
+        window.setTimeout("siteTime()", 1000);
+        var seconds = 1000;
+        var minutes = seconds * 60;
+        var hours = minutes * 60;
+        var days = hours * 24;
+        var years = days * 365;
+        var today = new Date();
+        var todayYear = today.getFullYear();
+        var todayMonth = today.getMonth()+1;
+        var todayDate = today.getDate();
+        var todayHour = today.getHours();
+        var todayMinute = today.getMinutes();
+        var todaySecond = today.getSeconds();
+        /* Date.UTC() -- 返回date对象距世界标准时间(UTC)1970年1月1日午夜之间的毫秒数(时间戳)
+        year - 作为date对象的年份，为4位年份值
+        month - 0-11之间的整数，做为date对象的月份
+        day - 1-31之间的整数，做为date对象的天数
+        hours - 0(午夜24点)-23之间的整数，做为date对象的小时数
+        minutes - 0-59之间的整数，做为date对象的分钟数
+        seconds - 0-59之间的整数，做为date对象的秒数
+        microseconds - 0-999之间的整数，做为date对象的毫秒数 */
+        var t1 = Date.UTC(2019,6,12,22,22,22); //北京时间2016-12-1 00:00:00
+        var t2 = Date.UTC(todayYear,todayMonth,todayDate,todayHour,todayMinute,todaySecond);
+        var diff = t2-t1;
+        var diffYears = Math.floor(diff/years);
+        var diffDays = Math.floor((diff/days)-diffYears*365);
+        var diffHours = Math.floor((diff-(diffYears*365+diffDays)*days)/hours);
+        var diffMinutes = Math.floor((diff-(diffYears*365+diffDays)*days-diffHours*hours)/minutes);
+        var diffSeconds = Math.floor((diff-(diffYears*365+diffDays)*days-diffHours*hours-diffMinutes*minutes)/seconds);
+        document.getElementById("htmer_time").innerHTML=diffYears+"年"+diffDays+"天"+diffHours+"时"+diffMinutes+"分"+diffSeconds+"秒";
+    }
+    siteTime();
+</script>
+
+    </div>
+</body>
+</html>

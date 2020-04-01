@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="Horace">
+
+
+
+
+
+
+    <title>结构型-桥接模式 (Bridge) | Horace&#39;s Blog</title>
+    
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+<body>
+	<script type="text/javascript" src="/js/canvas-colorful-nest.js"></script>
+    <div class="wrapper">
+        <header>
+    
+        <nav class="navbar">
+            <div class="container">
+                <div class="navbar-header header-logo"><a href="/">Horace&#39;s Blog</a></div>
+                <div class="menu navbar-right">
+                    
+                        <a class="menu-item" href="/archives">归档</a>
+                    
+                        <a class="menu-item" href="/categories">分类</a>
+                    
+                        <a class="menu-item" href="/tags">标签</a>
+                    
+                        <a class="menu-item" href="/about">关于</a>
+                    
+                    <input id="switch_default" type="checkbox" class="switch_default">
+                    <label for="switch_default" class="toggleBtn"></label>
+                </div>
+            </div>
+        </nav>
+
+        
+        <nav class="navbar-mobile" id="nav-mobile">
+            <div class="container">
+                <div class="navbar-header">
+                    <div>
+                        <a href="/">Horace&#39;s Blog</a>
+                    </div>
+                    <div style="display: inherit;">
+                        <div><a id="mobile-toggle-theme">Light</a></div>
+                        <div class="menu-toggle" onclick="mobileBtn()" style="padding-left: 15px;">&#9776;菜单</div>
+                    </div>
+                    
+                </div>
+                <div class="menu" id="mobile-menu">
+                    
+                        <a class="menu-item" href="/archives">归档</a>
+                    
+                        <a class="menu-item" href="/categories">分类</a>
+                    
+                        <a class="menu-item" href="/tags">标签</a>
+                    
+                        <a class="menu-item" href="/about">关于</a>
+                    
+                </div>
+            </div>
+        </nav>
+    
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+           mobileMenu.classList.remove("active")
+        }else{
+           toggleMenu.classList.add("active")
+           mobileMenu.classList.add("active")
+        }
+    }
+</script>
+        <div class="main">
+            <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <!--<a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>-->
+        <a onclick="go_top()">返回页首</a>
+        <a onclick="go_bottom()">转到底部</a>
+    </div>
+</div>
+
+<script>
+    document.ready(
+        function () {
+            tocbot.init({
+                tocSelector: '.tocbot-list',
+                contentSelector: '.post-content',
+                headingSelector: 'h1, h2, h3, h4, h5',
+                collapseDepth: 1,
+                orderedList: false,
+                scrollSmooth: true,
+            })
+        }
+    )
+
+    function expand_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 6,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "collapse_toc()");
+        b.innerHTML = "Collapse all"
+    }
+
+    function collapse_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 1,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "expand_toc()");
+        b.innerHTML = "Expand all"
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">结构型-桥接模式 (Bridge)</h1>
+            
+                <div class="post-meta">
+                    2020-02-26
+                <!--
+                    
+                        <a itemprop="author" rel="author" href="/">Horace</a> 
+                    
+
+                    
+                        <span class="post-time">
+                        发布于 <a href="#">02-26&nbsp;8:29:31</a> ,
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                            
+                                <a href="/categories/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/"># 设计模式</a>
+                            
+                        </span>
+                    
+                -->
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <p><a href="https://emojipedia.org/backhand-index-pointing-right/" target="_blank" rel="noopener">👉</a><a href="https://github.com/zhaohaihao/java-design-patterns/tree/master/112-Bridge" target="_blank" rel="noopener"><strong>文章示例代码</strong></a><a href="https://emojipedia.org/backhand-index-pointing-left/" target="_blank" rel="noopener">👈</a></p>
+<h1 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h1><blockquote>
+<p>将抽象部分与它的具体实现部分分离，使它们都可以独立地变化。</p>
+</blockquote>
+<p>桥接模式是通过组合的方式建立两个类之间的联系，而不是通过继承。</p>
+<h1 id="四个角色"><a href="#四个角色" class="headerlink" title="四个角色"></a>四个角色</h1><p>桥接模式中主要有以下四个角色：</p>
+<ul>
+<li><strong>抽象化角色Abstraction</strong>：定义抽象类，同时包含一个对实现化对象的引用。</li>
+<li><strong>扩展抽象化角色Refined Abstraction</strong>：抽象化角色的子类，实现父类中的方法，同时通过组合关系调用实现化角色当中的方法。</li>
+<li><strong>实现化角色Implementor</strong>：定义实现类的接口，供扩展抽象化角色调用。</li>
+<li><strong>具体实现化角色Concrete Implementor</strong>：定义实现化角色接口的具体实现。</li>
+</ul>
+<h1 id="场景示例"><a href="#场景示例" class="headerlink" title="场景示例"></a>场景示例</h1><p>笔者这里用不同的笔(圆珠笔、铅笔)来绘制不同图形(圆形、正方形)来举例。</p>
+<p>这里先不引进桥接模式，而是采用继承的方式来实现。</p>
+<h2 id="创建抽象类"><a href="#创建抽象类" class="headerlink" title="创建抽象类"></a>创建抽象类</h2><p>这里创建一个抽象父类，主要是为了做接口约束。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> zhh</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@description</span> 笔类</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@date</span> 2020-02-26 14:52</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">Pen</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 笔的名称</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> String name;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Pen</span><span class="params">(String name)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.name = name;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getName</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> name;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setName</span><span class="params">(String name)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.name = name;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">void</span> <span class="title">draw</span><span class="params">()</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="创建抽象子类"><a href="#创建抽象子类" class="headerlink" title="创建抽象子类"></a>创建抽象子类</h2><p>创建不同笔种的抽象子类，继承抽象父类 <code>Pen</code> 。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> zhh</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@description</span> 铅笔类</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@date</span> 2020-02-26 14:55</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">Pencil</span> <span class="keyword">extends</span> <span class="title">Pen</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Pencil</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>(<span class="string">"铅笔"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> zhh</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@description</span> 圆珠笔类</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@date</span> 2020-02-26 14:56</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">BallPen</span> <span class="keyword">extends</span> <span class="title">Pen</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">BallPen</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>(<span class="string">"圆珠笔类"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="创建具体的实现子类"><a href="#创建具体的实现子类" class="headerlink" title="创建具体的实现子类"></a>创建具体的实现子类</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> zhh</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@description</span> 铅笔画圆类</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@date</span> 2020-02-26 14:56</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">CircleWithPencil</span> <span class="keyword">extends</span> <span class="title">Pencil</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">draw</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        System.out.println(getName() + <span class="string">"画圆"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> zhh</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@description</span> 铅笔画正方形类</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@date</span> 2020-02-26 14:58</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SquareWithPencil</span> <span class="keyword">extends</span> <span class="title">Pencil</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">draw</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        System.out.println(getName() + <span class="string">"画正方形"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> zhh</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@description</span> 圆珠笔画圆类</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@date</span> 2020-02-26 14:57</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">CircleWithBallPen</span> <span class="keyword">extends</span> <span class="title">BallPen</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">draw</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        System.out.println(getName() + <span class="string">"画圆"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> zhh</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@description</span> 圆珠笔画正方形类</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@date</span> 2020-02-26 14:59</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SquareWithBallPen</span> <span class="keyword">extends</span> <span class="title">BallPen</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">draw</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        System.out.println(getName() + <span class="string">"画正方形"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="测试类及输出"><a href="#测试类及输出" class="headerlink" title="测试类及输出"></a>测试类及输出</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> zhh</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@description</span> 测试类</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@date</span> 2020-02-26 15:00</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Test</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        Pen circleWithBallPen = <span class="keyword">new</span> CircleWithBallPen();</span><br><span class="line">        circleWithBallPen.draw();</span><br><span class="line"></span><br><span class="line">        Pen circleWithPencil = <span class="keyword">new</span> CircleWithPencil();</span><br><span class="line">        circleWithPencil.draw();</span><br><span class="line"></span><br><span class="line">        Pen squareWithBallPen = <span class="keyword">new</span> SquareWithBallPen();</span><br><span class="line">        squareWithBallPen.draw();</span><br><span class="line"></span><br><span class="line">        Pen squareWithPencil = <span class="keyword">new</span> SquareWithPencil();</span><br><span class="line">        squareWithPencil.draw();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>测试类的输出结果如下：</p>
+<blockquote>
+<p>圆珠笔类画圆<br>铅笔画圆<br>圆珠笔类画正方形<br>铅笔画正方形</p>
+</blockquote>
+<h2 id="类结构图"><a href="#类结构图" class="headerlink" title="类结构图"></a>类结构图</h2><p>以上示例类的结构图如下所示</p>
+<p><img src="https://oss.zhaohaihao.com/photo/design-patterns/bridge/bridge01.png?x-oss-process=style/style01" alt="image.png"></p>
+<h1 id="问题所在"><a href="#问题所在" class="headerlink" title="问题所在"></a>问题所在</h1><p>上述代码虽然能满足我们的需求，但是你会发现一个问题。</p>
+<p>当我们需要扩展一项内容的时候，比方说，用各种笔来绘制直线图形，那这个时候我们就需要在示例中的抽象子类 <code>Pencil</code> 、 <code>BallPen</code> 当中各自增加 <code>LineWithPencil</code> 类和 <code>LineWithBallPen</code> 类。又或者，我们需要使用彩笔来绘制各种图形，那我们需要新增一个抽象子类 <code>ColourPen</code> ，然后写出其具体子类 <code>CircleWithColourPen</code> 类和 <code>SquareWithColourPen</code> 类。</p>
+<p>换句话也就是说，我们在笔和图形这两个维度中任意增加一种情况，就需要增加不同维度数量的类。</p>
+<p>延伸到多个维度，这种方式会导致类的成倍的增加，发生类爆炸。同时这种设计也使得程序的代码变得相当的臃肿。可见继承在这种场景中是相当麻烦的。</p>
+<h1 id="方案改进"><a href="#方案改进" class="headerlink" title="方案改进"></a>方案改进</h1><p>现在引入桥接模式对上述示例进行实现。</p>
+<p>通过示例，我们可以简单分析得知，这里变化的主要有两个部分，一个部分是笔的种类，另一个部分则是图形的种类。通过桥接模式，我们把这种多个维度分离出来，让其独立的变化，减少之间的耦合。</p>
+<h2 id="创建实现化角色"><a href="#创建实现化角色" class="headerlink" title="创建实现化角色"></a>创建实现化角色</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> zhh</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@description</span> 图形类</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@date</span> 2020-02-26 14:57</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">Shape</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="function">String <span class="title">draw</span><span class="params">()</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="创建具体实现化角色"><a href="#创建具体实现化角色" class="headerlink" title="创建具体实现化角色"></a>创建具体实现化角色</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> zhh</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@description</span> 圆形类</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@date</span> 2020-02-26 14:57</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Circle</span> <span class="keyword">implements</span> <span class="title">Shape</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">draw</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">"画圆"</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> zhh</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@description</span> 正方形类</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@date</span> 2020-02-26 14:57</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Square</span> <span class="keyword">implements</span> <span class="title">Shape</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">draw</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">"画正方形"</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="创建抽象化角色"><a href="#创建抽象化角色" class="headerlink" title="创建抽象化角色"></a>创建抽象化角色</h2><p>此处抽象化角色通过组合的方式，包含了一个对实现化角色的引用。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> zhh</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@description</span> 笔类</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@date</span> 2020-02-26 14:52</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">Pen</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 图形</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">protected</span> Shape shape;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Pen</span><span class="params">(Shape shape)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.shape = shape;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">void</span> <span class="title">draw</span><span class="params">()</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="创建扩展抽象化角色"><a href="#创建扩展抽象化角色" class="headerlink" title="创建扩展抽象化角色"></a>创建扩展抽象化角色</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> zhh</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@description</span> 铅笔类</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@date</span> 2020-02-26 14:55</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Pencil</span> <span class="keyword">extends</span> <span class="title">Pen</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Pencil</span><span class="params">(Shape shape)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>(shape);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">draw</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"铅笔"</span> + <span class="keyword">super</span>.shape.draw());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> zhh</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@description</span> 圆珠笔类</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@date</span> 2020-02-26 14:56</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">BallPen</span> <span class="keyword">extends</span> <span class="title">Pen</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">BallPen</span><span class="params">(Shape shape)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>(shape);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">draw</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"圆珠笔"</span> + <span class="keyword">super</span>.shape.draw());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="测试类及输出-1"><a href="#测试类及输出-1" class="headerlink" title="测试类及输出"></a>测试类及输出</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> zhh</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@description</span> 测试类</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@date</span> 2020-02-26 15:00</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Test</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        Pen ballPen1 = <span class="keyword">new</span> BallPen(<span class="keyword">new</span> Circle());</span><br><span class="line">        ballPen1.draw();</span><br><span class="line"></span><br><span class="line">        Pen ballPen2 = <span class="keyword">new</span> BallPen(<span class="keyword">new</span> Square());</span><br><span class="line">        ballPen2.draw();</span><br><span class="line"></span><br><span class="line">        Pencil pencil1 = <span class="keyword">new</span> Pencil(<span class="keyword">new</span> Circle());</span><br><span class="line">        pencil1.draw();</span><br><span class="line"></span><br><span class="line">        Pencil pencil2 = <span class="keyword">new</span> Pencil(<span class="keyword">new</span> Square());</span><br><span class="line">        pencil2.draw();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>测试类的输出结果如下：</p>
+<blockquote>
+<p>圆珠笔画圆<br>圆珠笔画正方形<br>铅笔画圆<br>铅笔画正方形</p>
+</blockquote>
+<h2 id="类结构图-1"><a href="#类结构图-1" class="headerlink" title="类结构图"></a>类结构图</h2><p>以上示例类的结构图如下所示</p>
+<p><img src="https://oss.zhaohaihao.com/photo/design-patterns/bridge/bridge02.png?x-oss-process=style/style01" alt="image.png"></p>
+<p>通过类图我们可以清楚地看到实现化角色 <code>Shape</code> 和抽象化角色 <code>Pen</code> 之间是一比一的组合关系，两者都可以独立的扩展自己。如论两者如何进行组合，都不会发生类爆炸的情况。</p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><h2 id="适用场景"><a href="#适用场景" class="headerlink" title="适用场景"></a>适用场景</h2><ul>
+<li>在抽象部分和具体实现部分之间需要增加更多的灵活性。</li>
+<li>一个类存在两个(或者多个)独立变化的维度，并且这两个(或者多个)维度都需要独立地进行扩展。</li>
+<li>由于多层继承导致系统类的个数剧增，或者说不想使用继承。</li>
+</ul>
+<h2 id="优点"><a href="#优点" class="headerlink" title="优点"></a>优点</h2><ul>
+<li>抽象部分和具体实现部分分离</li>
+<li>提高了系统的可扩展性</li>
+<li>避免类爆炸</li>
+</ul>
+<h2 id="缺点"><a href="#缺点" class="headerlink" title="缺点"></a>缺点</h2><ul>
+<li>增加了系统的理解与设计难度</li>
+<li>使用范围具有局限性，需要识别出系统中两个独立变化的维度</li>
+</ul>
+<h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><ul>
+<li>《Head First 设计模式》</li>
+<li>《大话设计模式》</li>
+<li><a href="https://zh.wikipedia.org/wiki/%E6%A9%8B%E6%8E%A5%E6%A8%A1%E5%BC%8F" target="_blank" rel="noopener">维基百科-桥接模式</a></li>
+<li><a href="https://www.runoob.com/design-pattern/bridge-pattern.html" target="_blank" rel="noopener">菜鸟教程-桥接模式</a></li>
+</ul>
+
+        </div>
+
+        
+            <section class="post-copyright">
+            
+                
+                
+                
+                
+
+                
+                    <p class="copyright-item" style="text-align: center; margin: 20px 0px;">
+                        <span>© 转载请保留本文地址, 著作权归作者所有</span>
+                    </p>
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <!--<span>Tag(s):</span>-->
+                <span class="tag">
+                    
+                    
+                        <a href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/"># 设计模式</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">返回上层</a>
+                <span>· </span>
+                <a href="/">返回主页</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/posts/2020022602.html">结构型-代理模式 (Proxy)</a>
+            
+            
+            <a class="next" rel="next" href="/posts/2020021601.html">结构型-享元模式 (Flyweight)</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+        </div>
+        
+	<footer id="footer" class="footer" style="line-height: unset;">
+	    <div class="copyright" style="text-align: center;">
+	        本站已安全运行 <span id="htmer_time">0年293天1时59分51秒</span></br>
+	        <span>© 2019-2020 Horace&#39;s Blog.</span>
+	    </div>
+	</footer>
+
+	<script language="javascript">
+    function siteTime(){
+        window.setTimeout("siteTime()", 1000);
+        var seconds = 1000;
+        var minutes = seconds * 60;
+        var hours = minutes * 60;
+        var days = hours * 24;
+        var years = days * 365;
+        var today = new Date();
+        var todayYear = today.getFullYear();
+        var todayMonth = today.getMonth()+1;
+        var todayDate = today.getDate();
+        var todayHour = today.getHours();
+        var todayMinute = today.getMinutes();
+        var todaySecond = today.getSeconds();
+        /* Date.UTC() -- 返回date对象距世界标准时间(UTC)1970年1月1日午夜之间的毫秒数(时间戳)
+        year - 作为date对象的年份，为4位年份值
+        month - 0-11之间的整数，做为date对象的月份
+        day - 1-31之间的整数，做为date对象的天数
+        hours - 0(午夜24点)-23之间的整数，做为date对象的小时数
+        minutes - 0-59之间的整数，做为date对象的分钟数
+        seconds - 0-59之间的整数，做为date对象的秒数
+        microseconds - 0-999之间的整数，做为date对象的毫秒数 */
+        var t1 = Date.UTC(2019,6,12,22,22,22); //北京时间2016-12-1 00:00:00
+        var t2 = Date.UTC(todayYear,todayMonth,todayDate,todayHour,todayMinute,todaySecond);
+        var diff = t2-t1;
+        var diffYears = Math.floor(diff/years);
+        var diffDays = Math.floor((diff/days)-diffYears*365);
+        var diffHours = Math.floor((diff-(diffYears*365+diffDays)*days)/hours);
+        var diffMinutes = Math.floor((diff-(diffYears*365+diffDays)*days-diffHours*hours)/minutes);
+        var diffSeconds = Math.floor((diff-(diffYears*365+diffDays)*days-diffHours*hours-diffMinutes*minutes)/seconds);
+        document.getElementById("htmer_time").innerHTML=diffYears+"年"+diffDays+"天"+diffHours+"时"+diffMinutes+"分"+diffSeconds+"秒";
+    }
+    siteTime();
+</script>
+
+    </div>
+</body>
+</html>
