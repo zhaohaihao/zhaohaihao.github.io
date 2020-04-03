@@ -127,7 +127,7 @@
             <div id="links" class="container">
     <div class="post-wrap">
         <h2 class="post-title">&nbsp;友链&nbsp;</h2>
-        <div class="post-content" style="padding-top: 0rem;">
+        <div class="post-content" style="padding-top: 0rem; text-align: left;">
             <h2>友链申请</h2>
 <span style="font-weight:bold; color: red;">注：请确保贵站可以稳定运营, 会不定期删除废链。</span>
 
@@ -306,6 +306,12 @@
             text-overflow: ellipsis;
             overflow: hidden;
             white-space: nowrap;
+        }
+
+        @media screen and (max-width: 479px) {
+            .card:nth-child(even) {
+                float: left;
+            }
         }
     </style>
 </div>
